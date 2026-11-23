@@ -14,7 +14,7 @@
   <meta property="og:title" content="MAK 2026 · Tayangan Rasmi &amp; Semakan Slaid Guru">
   <meta property="og:description" content="Tonton tayangan rasmi 3 sidang MAK 2026 SK Ranggu secara dalam talian (Jumaat Pagi, Jumaat Petang &amp; Sabtu Pagi) dan hantar maklum balas di ruang komen guru.">
   <meta property="og:image" content="logo-majlis.png">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261123c">
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
 </head>
 <body oncontextmenu="return false;">
@@ -30,35 +30,28 @@
     </a>
     <div class="header-badges">
       <span class="badge-live"><span class="pulse-dot"></span> TAYANGAN LANGSUNG GURU</span>
-      <button type="button" class="btn-admin-header" id="btn-toggle-admin">
-        🔐 Panel Admin
+      <button type="button" class="btn-admin-icon" id="btn-toggle-admin" aria-label="Akses">
+        🔒
       </button>
     </div>
   </header>
 
   <main>
-    <!-- PANEL KAWALAN ADMIN (UNTUK CIKGU FIKREY TUKAR VIDEO & KAWAL SIDANG) -->
-    <section id="admin-panel" class="admin-panel" hidden aria-label="Panel Kawalan Admin">
-      <!-- Skrin Log Masuk PIN Admin -->
-      <div id="admin-login-view" class="admin-login-card">
-        <div class="admin-login-header">
-          <div>
-            <span class="admin-eyebrow">🔐 AKSES KHAS PENTADBIR · MAK 2026 SK RANGGU</span>
-            <h2>Log Masuk Panel Admin (Tukar &amp; Urus Video)</h2>
-            <p>Masukkan Kata Laluan / Kod PIN Admin untuk menukar video mana-mana sidang, memuat naik fail video baharu, atau mengawal sidang tayangan utama semua guru.</p>
-          </div>
-          <button type="button" class="btn-close-admin" id="btn-close-admin-login" title="Tutup Panel Admin">✕</button>
-        </div>
-        <form id="admin-login-form" class="admin-login-form">
+    <section id="admin-panel" class="admin-panel" hidden>
+      <!-- Bar Kod Akses Ringkas (Ikon Sahaja) -->
+      <div id="admin-login-view" class="admin-login-compact">
+        <form id="admin-login-form" class="admin-login-inline">
+          <span class="lock-icon-label">🔑</span>
           <input
             type="password"
             id="admin-pin-input"
             class="field-input"
-            placeholder="Masukkan Kod Akses Pentadbir"
+            placeholder="••••••••"
             required
             autocomplete="off"
           >
-          <button type="submit" class="btn-gold">🔓 Buka Panel Tukar Video</button>
+          <button type="submit" class="btn-gold-icon" title="Masuk">🔓</button>
+          <button type="button" class="btn-close-admin" id="btn-close-admin-login" title="Tutup">✕</button>
         </form>
       </div>
 
@@ -558,6 +551,6 @@
     </div>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=20261123c"></script>
 </body>
 </html>

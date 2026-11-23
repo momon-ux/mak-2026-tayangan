@@ -1570,3 +1570,69 @@ address {
     grid-template-columns: 1fr;
   }
 }
+
+/* Pastikan semua elemen [hidden] benar-benar tersembunyi */
+[hidden] {
+  display: none !important;
+}
+
+/* Butang Ikon Sahaja (Tanpa Teks Panel Admin) */
+.btn-admin-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 1.5px solid var(--gold);
+  color: var(--gold-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.92rem;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.btn-admin-icon:hover {
+  background: var(--royal);
+  transform: scale(1.06);
+}
+
+.admin-login-compact {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+
+.admin-login-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #0b1642 0%, #13286e 100%);
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+  padding: 6px 10px 6px 14px;
+  box-shadow: 0 10px 24px rgba(7, 15, 46, 0.22);
+}
+
+.lock-icon-label {
+  font-size: 0.95rem;
+}
+
+.admin-login-inline .field-input {
+  width: 170px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.btn-gold-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #dcb35a, #f3d893);
+  border: 1px solid #fae6b6;
+  color: #101942;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
