@@ -1298,3 +1298,275 @@ address {
     display: none !important;
   }
 }
+
+/* ==========================================================================
+   PANEL KAWALAN ADMIN (TUKAR VIDEO & URUS TAYANGAN)
+   ========================================================================== */
+.btn-admin-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--ink);
+  border: 1.5px solid var(--gold);
+  color: var(--gold-light);
+  font-size: 0.78rem;
+  font-weight: 800;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.btn-admin-header:hover {
+  background: var(--royal);
+  transform: translateY(-1px);
+}
+
+.admin-panel {
+  margin-bottom: 24px;
+}
+
+.admin-login-card,
+.admin-dashboard-card {
+  background: linear-gradient(135deg, #0b1642 0%, #13286e 100%);
+  border: 2px solid var(--gold);
+  border-radius: 18px;
+  padding: 24px 28px;
+  color: var(--white);
+  box-shadow: 0 18px 42px rgba(7, 15, 46, 0.28);
+}
+
+.admin-login-header,
+.admin-dash-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.admin-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.admin-login-header h2,
+.admin-dash-header h2 {
+  margin: 0 0 6px;
+  font-size: 1.4rem;
+}
+
+.admin-login-header p,
+.admin-dash-header p {
+  margin: 0;
+  color: #dbe4ff;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.btn-close-admin {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: var(--white);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.admin-login-form {
+  display: flex;
+  gap: 12px;
+  max-width: 560px;
+  flex-wrap: wrap;
+}
+
+.admin-login-form .field-input {
+  flex: 1;
+  min-width: 240px;
+}
+
+.admin-dash-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 20px;
+}
+
+.admin-box {
+  background: var(--white);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 20px 22px;
+  border: 1px solid var(--gold);
+}
+
+.admin-box h3 {
+  margin: 0 0 14px;
+  font-size: 1.08rem;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-method-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.method-tab {
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  color: var(--ink);
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.method-tab.active {
+  background: var(--ink);
+  color: var(--gold-light);
+  border-color: var(--gold);
+}
+
+.admin-method-pane {
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.admin-help-text {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 8px 0 0;
+}
+
+.admin-help-text code {
+  background: #e2e8f0;
+  color: #0f172a;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.admin-two-col {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 12px;
+}
+
+.admin-btn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.upload-progress-wrap {
+  margin-top: 10px;
+}
+
+.upload-progress-bar {
+  height: 10px;
+  border-radius: 99px;
+  background: #e2e8f0;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.upload-progress-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #142d79, #10b981);
+  transition: width 0.2s;
+}
+
+.admin-current-summary {
+  margin-top: 16px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.live-announcement-bar {
+  background: linear-gradient(90deg, #fef3c7, #fde68a);
+  border: 2px solid #f59e0b;
+  color: #78350f;
+  padding: 12px 18px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comment-admin-actions {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.btn-admin-comment {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.btn-admin-comment:hover {
+  background: #e2e8f0;
+}
+
+.btn-admin-comment.danger {
+  color: #b91c1c;
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.comment-resolved-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #34d399;
+  font-size: 0.73rem;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 6px;
+}
+
+@media (max-width: 960px) {
+  .admin-grid,
+  .admin-two-col {
+    grid-template-columns: 1fr;
+  }
+}

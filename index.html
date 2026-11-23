@@ -31,10 +31,168 @@
     <div class="header-badges">
       <span class="badge-live"><span class="pulse-dot"></span> TAYANGAN LANGSUNG GURU</span>
       <span class="badge-protect">🔒 MOD TAYANGAN SAHAJA · TANPA MUAT TURUN</span>
+      <button type="button" class="btn-admin-header" id="btn-toggle-admin">
+        🔐 Panel Admin (Tukar Video)
+      </button>
     </div>
   </header>
 
   <main>
+    <!-- PANEL KAWALAN ADMIN (UNTUK CIKGU FIKREY TUKAR VIDEO & KAWAL SIDANG) -->
+    <section id="admin-panel" class="admin-panel" hidden aria-label="Panel Kawalan Admin">
+      <!-- Skrin Log Masuk PIN Admin -->
+      <div id="admin-login-view" class="admin-login-card">
+        <div class="admin-login-header">
+          <div>
+            <span class="admin-eyebrow">🔐 AKSES KHAS PENTADBIR · MAK 2026 SK RANGGU</span>
+            <h2>Log Masuk Panel Admin (Tukar &amp; Urus Video)</h2>
+            <p>Masukkan Kata Laluan / Kod PIN Admin untuk menukar video mana-mana sidang, memuat naik fail video baharu, atau mengawal sidang tayangan utama semua guru.</p>
+          </div>
+          <button type="button" class="btn-close-admin" id="btn-close-admin-login" title="Tutup Panel Admin">✕</button>
+        </div>
+        <form id="admin-login-form" class="admin-login-form">
+          <input
+            type="password"
+            id="admin-pin-input"
+            class="field-input"
+            placeholder="Masukkan Kod PIN Admin (Contoh: MAK2026 atau XBA3037)"
+            required
+            autocomplete="off"
+          >
+          <button type="submit" class="btn-gold">🔓 Buka Panel Tukar Video</button>
+        </form>
+      </div>
+
+      <!-- Skrin Pengurusan & Penukaran Video (Selepas Log Masuk Admin) -->
+      <div id="admin-dashboard-view" class="admin-dashboard-card" hidden>
+        <div class="admin-dash-header">
+          <div>
+            <span class="admin-eyebrow">🛠️ MOD PENTADBIR AKTIF · MOHAMMAD FIKREY BIN ABDUL GAPAR</span>
+            <h2>Pusat Kawalan &amp; Penukaran Video Tayangan MAK 2026</h2>
+            <p>Semua perubahan yang anda simpan di sini akan <strong>dikemas kini secara langsung (live)</strong> kepada semua guru yang membuka pautan portal ini (kekal dalam mod tanpa muat turun).</p>
+          </div>
+          <div class="admin-dash-actions">
+            <button type="button" class="btn-outline-sm" id="btn-admin-logout">🚪 Log Keluar Admin</button>
+            <button type="button" class="btn-close-admin" id="btn-close-admin-dash" title="Sembunyikan Panel">✕</button>
+          </div>
+        </div>
+
+        <div class="admin-grid">
+          <!-- KIRI: BORANG TUKAR VIDEO MENGIKUT SIDANG -->
+          <div class="admin-box">
+            <h3>🎬 1. Pilih Sidang &amp; Tukar Video</h3>
+            <form id="admin-video-form" class="admin-form">
+              <label class="field-label">
+                Pilih Sidang Yang Mahu Ditukar Videonya *
+                <select id="admin-target-session" class="field-select">
+                  <option value="s1">Sidang 1 — Jumaat Pagi (Hari Pertama Pagi)</option>
+                  <option value="s2">Sidang 2 — Jumaat Petang (Hari Pertama Petang)</option>
+                  <option value="s3">Sidang 3 — Sabtu Pagi (Hari Kedua)</option>
+                </select>
+              </label>
+
+              <div class="admin-method-tabs">
+                <button type="button" class="method-tab active" data-method="upload">📤 Muat Naik Fail Video (.mp4)</button>
+                <button type="button" class="method-tab" data-method="url">🔗 Guna Pautan / Strim (.m3u8 / .mp4 / Drive)</button>
+              </div>
+
+              <!-- Kaedah 1: Muat Naik Fail Terus dari Komputer/Telefon -->
+              <div id="admin-method-upload" class="admin-method-pane">
+                <label class="field-label">
+                  Pilih Fail Video Baharu Dari Komputer / Peranti (.mp4)
+                  <input type="file" id="admin-video-file" class="field-input" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.m3u8">
+                </label>
+                <p class="admin-help-text">
+                  💡 <strong>Tip Pantas:</strong> Untuk fail video sehingga <strong>95 MB</strong>, anda boleh memuat naik terus di sini ke GitHub <code>momon-ux</code>. Untuk fail video induk Canva bersaiz gergasi (<strong>1 GB – 5 GB</strong>), dwi-klik aplikasi <strong><code>Tukar-Video-Admin-MAK2026.command</code></strong> di Desktop Mac anda supaya ia dipecahkan kepada segmen HLS terenkripsi secara automatik.
+                </p>
+                <div id="admin-upload-progress-wrap" class="upload-progress-wrap" hidden>
+                  <div class="upload-progress-bar"><span id="admin-upload-bar-fill" style="width:0%"></span></div>
+                  <small id="admin-upload-status-text">Memuat naik video ke GitHub momon-ux...</small>
+                </div>
+              </div>
+
+              <!-- Kaedah 2: Tampal Pautan Video / Strim -->
+              <div id="admin-method-url" class="admin-method-pane" hidden>
+                <label class="field-label">
+                  URL Strim HLS (.m3u8) atau Pautan Video (.mp4 / Google Drive / Awan)
+                  <input
+                    type="text"
+                    id="admin-video-url"
+                    class="field-input"
+                    placeholder="Contoh: streams/s1/index.m3u8 atau https://.../video-baharu.mp4"
+                  >
+                </label>
+                <p class="admin-help-text">
+                  💡 Anda juga boleh menukar antara strim sedia ada (<code>streams/s1/index.m3u8</code>, <code>streams/s2/index.m3u8</code>, <code>streams/s3/index.m3u8</code>) atau memasukkan pautan video baharu. Semua video kekal dilindungi perisai anti-muat turun.
+                </p>
+              </div>
+
+              <div class="admin-two-col">
+                <label class="field-label">
+                  Tajuk Paparan Sidang
+                  <input type="text" id="admin-session-title" class="field-input" required>
+                </label>
+                <label class="field-label">
+                  Label Durasi (MM:SS)
+                  <input type="text" id="admin-session-duration" class="field-input" placeholder="Contoh: 59:42" required>
+                </label>
+              </div>
+
+              <label class="field-label">
+                Subtajuk / Tarikh &amp; Masa Sidang (Pada Kad Tab)
+                <input type="text" id="admin-session-subtitle" class="field-input" placeholder="Contoh: 27 Nov 2026 (Jumaat) · 6.30 Pagi – 10.40 Pagi">
+              </label>
+
+              <div class="admin-btn-row">
+                <button type="submit" class="btn-send-comment" id="btn-admin-save-video">
+                  💾 Simpan &amp; Tukar Video Secara Live
+                </button>
+                <button type="button" class="btn-outline-sm" id="btn-admin-reset-video">
+                  🔄 Pulihkan Video Asal Sidang Ini
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- KANAN: KAWALAN SIARAN UTAMA & STATUS SIDANG -->
+          <div class="admin-box">
+            <h3>📡 2. Kawalan Tayangan Utama Semua Guru</h3>
+            <p class="admin-help-text" style="margin-top:0;">
+              Tetapkan sidang mana yang akan dimainkan terlebih dahulu secara automatik apabila semua guru membuka pautan <code>momon-ux.github.io/mak-2026-tayangan/</code>:
+            </p>
+
+            <label class="field-label" style="margin-bottom:14px;">
+              Sidang Utama Semasa (Default Live Session)
+              <select id="admin-default-session" class="field-select">
+                <option value="s1">Sidang 1 — Jumaat Pagi (Utama)</option>
+                <option value="s2">Sidang 2 — Jumaat Petang (Utama)</option>
+                <option value="s3">Sidang 3 — Sabtu Pagi (Utama)</option>
+              </select>
+            </label>
+
+            <label class="field-label" style="margin-bottom:14px;">
+              Pengumuman / Nota Pentadbir di Atas Video (Pilihan)
+              <input
+                type="text"
+                id="admin-announcement-input"
+                class="field-input"
+                placeholder="Contoh: Kemas kini baharu: Slaid Tahun 6 Jumaat Pagi telah dikemas kini pada 2.00 petang."
+              >
+            </label>
+
+            <button type="button" class="btn-gold" id="btn-admin-save-broadcast" style="width:100%;">
+              📡 Aktifkan Tetapan Tayangan Utama kepada Semua Guru
+            </button>
+
+            <div class="admin-current-summary" id="admin-current-summary"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BANNER PENGUMUMAN ADMIN (JIKA ADA) -->
+    <div id="live-announcement-bar" class="live-announcement-bar" hidden></div>
+
     <!-- HERO BANNER -->
     <section class="hero-banner">
       <img class="hero-logo" src="logo-majlis.png" alt="Logo Majlis Apresiasi Kecemerlangan 2026">
