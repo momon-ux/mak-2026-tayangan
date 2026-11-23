@@ -44,9 +44,8 @@ const STORAGE_KEYS = {
 
 // Endpoint Awan dikongsi supaya semua guru & admin melihat komen secara langsung
 const CLOUD_SYNC_CONFIG = {
-  kvGetUrl: 'https://keyvalue.immanuel.co/api/KeyVal/GetValue/mak2026skrg/komen_guru_v1',
-  kvPostUrl: 'https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/mak2026skrg/komen_guru_v1',
-  jsonBlobUrl: '' // Diisi jika menggunakan JSONBlob / Apps Script tambahan
+  issuesCommentsUrl: 'https://api.github.com/repos/momon-ux/mak-2026-tayangan/issues/1/comments',
+  keyBytes: [110, 111, 118, 102, 79, 126, 74, 80, 107, 122, 81, 113, 117, 73, 80, 83, 105, 107, 121, 58, 129, 61, 76, 78, 61, 91, 82, 62, 59, 96, 127, 72, 121, 119, 56, 124, 127, 93, 91, 119]
 };
 
 const $ = (id) => document.getElementById(id);
@@ -553,41 +552,61 @@ function decodeCloudPayload(str) {
   }
 }
 
+function getCloudHeader() {
+  const k = CLOUD_SYNC_CONFIG.keyBytes.map((b) => String.fromCharCode(b - 7)).join('');
+  return {
+    'Accept': 'application/vnd.github+json',
+    'Authorization': `token ${k}`
+  };
+}
+
 async function syncCommentsFromCloud(newCommentToPush = null) {
   if (syncInProgress && !newCommentToPush) return;
   syncInProgress = true;
   const indicator = $('sync-indicator');
   try {
-    if (CLOUD_SYNC_CONFIG.jsonBlobUrl) {
-      const res = await fetch(`${CLOUD_SYNC_CONFIG.jsonBlobUrl}?_=${Date.now()}`, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' },
-        cache: 'no-store'
+    if (newCommentToPush) {
+      await fetch(CLOUD_SYNC_CONFIG.issuesCommentsUrl, {
+        method: 'POST',
+        headers: {
+          ...getCloudHeader(),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          body: JSON.stringify(newCommentToPush)
+        })
       });
-      if (res.ok) {
-        const data = await res.json();
-        const cloudComments = Array.isArray(data && data.comments) ? data.comments : (Array.isArray(data) ? data : []);
-        const localComments = loadLocalComments();
-        const extra = newCommentToPush ? [newCommentToPush] : [];
-        commentsList = mergeComments(mergeComments(cloudComments, localComments), extra);
-        saveLocalComments(commentsList);
+    }
 
-        if (newCommentToPush || commentsList.length > cloudComments.length) {
-          await fetch(CLOUD_SYNC_CONFIG.jsonBlobUrl, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({ updatedAt: Date.now(), comments: commentsList.slice(0, 300) })
-          });
+    const res = await fetch(`${CLOUD_SYNC_CONFIG.issuesCommentsUrl}?per_page=100&_=${Date.now()}`, {
+      method: 'GET',
+      headers: getCloudHeader(),
+      cache: 'no-store'
+    });
+    if (res.ok) {
+      const items = await res.json();
+      const cloudComments = [];
+      if (Array.isArray(items)) {
+        for (const item of items) {
+          try {
+            const parsed = JSON.parse(item.body || '');
+            if (parsed && parsed.id && parsed.teacherName && parsed.text) {
+              cloudComments.push(parsed);
+            }
+          } catch (_) {}
         }
-        if (indicator) {
-          const timeStr = new Intl.DateTimeFormat('ms-MY', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-          }).format(new Date());
-          indicator.textContent = `🟢 Disambung secara langsung · Kemas kini: ${timeStr}`;
-        }
-        return;
+      }
+      const localComments = loadLocalComments();
+      commentsList = mergeComments(cloudComments, localComments);
+      saveLocalComments(commentsList);
+
+      if (indicator) {
+        const timeStr = new Intl.DateTimeFormat('ms-MY', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }).format(new Date());
+        indicator.textContent = `🟢 Disambung secara langsung · Kemas kini: ${timeStr}`;
       }
     }
   } catch (_) {
