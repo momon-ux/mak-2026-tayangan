@@ -13,11 +13,11 @@ const DEFAULT_SESSIONS = {
     badge: 'SIDANG 1 · JUMAAT PAGI',
     cardTitle: 'Hari Pertama (Pagi)',
     shortName: 'Sidang 1 (Jumaat Pagi)',
-    subtitle: '27 Nov 2026 (Jumaat) · 6.30 Pagi – 10.40 Pagi · Durasi: 59m 42s',
+    subtitle: '27 Nov 2026 (Jumaat) · 6.30 Pagi – 10.40 Pagi · Durasi: 48m 02s',
     title: 'MAK 2026 — 1 Jumaat Pagi — Fail Utama (27 Nov 2026 · 6.30 Pagi – 10.40 Pagi)',
-    playlist: 'streams/s1/index.m3u8',
-    poster: 'posters/s1.jpg',
-    durationLabel: '59:42'
+    playlist: 'streams/s1/index.m3u8?v=20261124',
+    poster: 'posters/s1.jpg?v=20261124',
+    durationLabel: '48:02'
   },
   s2: {
     id: 's2',
@@ -26,8 +26,8 @@ const DEFAULT_SESSIONS = {
     shortName: 'Sidang 2 (Jumaat Petang)',
     subtitle: '27 Nov 2026 (Jumaat) · 12.50 Tgh Hari – 4.40 Ptg · Durasi: 33m 05s',
     title: 'MAK 2026 — 2 Jumaat Petang — Fail Utama (27 Nov 2026 · 12.50 Tgh Hari – 4.40 Ptg)',
-    playlist: 'streams/s2/index.m3u8',
-    poster: 'posters/s2.jpg',
+    playlist: 'streams/s2/index.m3u8?v=20261124',
+    poster: 'posters/s2.jpg?v=20261124',
     durationLabel: '33:05'
   },
   s3: {
@@ -35,11 +35,11 @@ const DEFAULT_SESSIONS = {
     badge: 'SIDANG 3 · SABTU PAGI',
     cardTitle: 'Hari Kedua (Sabtu Pagi)',
     shortName: 'Sidang 3 (Sabtu Pagi)',
-    subtitle: '28 Nov 2026 (Sabtu) · 6.40 Pagi – 11.30 Pagi · Durasi: 25m 01s',
+    subtitle: '28 Nov 2026 (Sabtu) · 6.40 Pagi – 11.30 Pagi · Durasi: 36m 40s',
     title: 'MAK 2026 — 3 Sabtu Pagi — Fail Utama (28 Nov 2026 · 6.40 Pagi – 11.30 Pagi)',
-    playlist: 'streams/s3/index.m3u8',
-    poster: 'posters/s3.jpg',
-    durationLabel: '25:01'
+    playlist: 'streams/s3/index.m3u8?v=20261124',
+    poster: 'posters/s3.jpg?v=20261124',
+    durationLabel: '36:40'
   }
 };
 
