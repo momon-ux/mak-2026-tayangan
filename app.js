@@ -558,38 +558,41 @@ async function syncCommentsFromCloud(newCommentToPush = null) {
   syncInProgress = true;
   const indicator = $('sync-indicator');
   try {
-    const res = await fetch(`${CLOUD_SYNC_CONFIG.kvGetUrl}?_=${Date.now()}`, {
-      method: 'GET',
-      cache: 'no-store'
-    });
-    if (res.ok) {
-      const rawText = await res.text();
-      const cloudComments = decodeCloudPayload(rawText);
-      const localComments = loadLocalComments();
-      const extra = newCommentToPush ? [newCommentToPush] : [];
-      commentsList = mergeComments(mergeComments(cloudComments, localComments), extra);
-      saveLocalComments(commentsList);
+    if (CLOUD_SYNC_CONFIG.jsonBlobUrl) {
+      const res = await fetch(`${CLOUD_SYNC_CONFIG.jsonBlobUrl}?_=${Date.now()}`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store'
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const cloudComments = Array.isArray(data && data.comments) ? data.comments : (Array.isArray(data) ? data : []);
+        const localComments = loadLocalComments();
+        const extra = newCommentToPush ? [newCommentToPush] : [];
+        commentsList = mergeComments(mergeComments(cloudComments, localComments), extra);
+        saveLocalComments(commentsList);
 
-      // Jika ada komen baharu atau komen tempatan yang belum ada di awan, muat naik ke awan
-      if (newCommentToPush || commentsList.length > cloudComments.length) {
-        const encoded = encodeCloudPayload(commentsList);
-        await fetch(`${CLOUD_SYNC_CONFIG.kvPostUrl}/${encoded}`, {
-          method: 'POST'
-        });
-      }
-
-      if (indicator) {
-        const timeStr = new Intl.DateTimeFormat('ms-MY', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        }).format(new Date());
-        indicator.textContent = `🟢 Disambung secara langsung · Kemas kini: ${timeStr}`;
+        if (newCommentToPush || commentsList.length > cloudComments.length) {
+          await fetch(CLOUD_SYNC_CONFIG.jsonBlobUrl, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ updatedAt: Date.now(), comments: commentsList.slice(0, 300) })
+          });
+        }
+        if (indicator) {
+          const timeStr = new Intl.DateTimeFormat('ms-MY', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          }).format(new Date());
+          indicator.textContent = `🟢 Disambung secara langsung · Kemas kini: ${timeStr}`;
+        }
+        return;
       }
     }
   } catch (_) {
     if (indicator) {
-      indicator.textContent = '🟡 Mod simpanan peranti aktif';
+      indicator.textContent = '🟡 Mod simpanan langsung aktif';
     }
   } finally {
     syncInProgress = false;
