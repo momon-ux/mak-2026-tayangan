@@ -52,7 +52,7 @@ const STORAGE_KEYS = {
   ADMIN_SESSION: 'mak2026_admin_auth_v1'
 };
 
-const VALID_ADMIN_PINS = ['MAK2026', 'XBA3037', 'ADMIN2026', 'FIKREY', 'SKRANGGU'];
+const ADMIN_HASH = 'f4cf6f28cd1d68e6394b136e8877ab487018648509770a73153bf0af2b3168d9';
 
 const CLOUD_SYNC_CONFIG = {
   repoApiBase: 'https://api.github.com/repos/momon-ux/mak-2026-tayangan',
@@ -382,19 +382,21 @@ function initAdminPanel() {
     panel.hidden = true;
   });
 
-  $('admin-login-form').addEventListener('submit', (e) => {
+  $('admin-login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const pin = String($('admin-pin-input').value || '').trim().toUpperCase();
-    if (VALID_ADMIN_PINS.includes(pin)) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
+    const hashHex = Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+    if (hashHex === ADMIN_HASH) {
       isAdmin = true;
       try {
         sessionStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, 'true');
       } catch (_) {}
       $('admin-pin-input').value = '';
       syncAdminView();
-      showToast('🔓 Log masuk Admin berjaya! Anda kini boleh menukar video dan mengurus komen.');
+      showToast('🔓 Log masuk Pentadbir berjaya! Anda kini boleh menukar video dan mengurus komen.');
     } else {
-      showToast('⚠️ Kod PIN Admin tidak tepat. Cuba: MAK2026 atau XBA3037');
+      showToast('⚠️ Kod akses pentadbir tidak sah. Sila cuba semula.');
       $('admin-pin-input').select();
     }
   });
