@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/png" href="logo-sekolah.png">
+  <meta name="theme-color" content="#0d1946">
+  <title>MAK 2026 · Tayangan Rasmi &amp; Semakan Guru (SK Ranggu)</title>
+  <meta name="description" content="Portal Tayangan Rasmi Dalam Talian Majlis Apresiasi Kecemerlangan (MAK) 2026 SK Ranggu. Mod tayangan sahaja (tanpa muat turun) bersama ruang komen langsung guru.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ms_MY">
+  <meta property="og:site_name" content="MAK 2026 · SK Ranggu">
+  <meta property="og:title" content="MAK 2026 · Tayangan Rasmi &amp; Semakan Slaid Guru">
+  <meta property="og:description" content="Tonton tayangan rasmi 3 sidang MAK 2026 SK Ranggu secara dalam talian (Jumaat Pagi, Jumaat Petang &amp; Sabtu Pagi) dan hantar maklum balas di ruang komen guru.">
+  <meta property="og:image" content="logo-majlis.png">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
+</head>
+<body oncontextmenu="return false;">
+
+  <!-- HEADER RASMI -->
+  <header>
+    <a class="brand" href="#panggung">
+      <img class="school-logo" src="logo-sekolah.png" alt="Logo Sekolah Kebangsaan Ranggu">
+      <span>
+        SEKOLAH KEBANGSAAN RANGGU
+        <small>XBA3037 · TAWAU, SABAH · MAJLIS APRESIASI KECEMERLANGAN 2026</small>
+      </span>
+    </a>
+    <div class="header-badges">
+      <span class="badge-live"><span class="pulse-dot"></span> TAYANGAN LANGSUNG GURU</span>
+      <span class="badge-protect">🔒 MOD TAYANGAN SAHAJA · TANPA MUAT TURUN</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO BANNER -->
+    <section class="hero-banner">
+      <img class="hero-logo" src="logo-majlis.png" alt="Logo Majlis Apresiasi Kecemerlangan 2026">
+      <div class="hero-text">
+        <p class="eyebrow">PORTAL TAYANGAN DALAM TALIAN · AJK FOTO &amp; SLAID MAK 2026</p>
+        <h1>Tayangan Rasmi Video Slaid<br><em>Majlis Apresiasi Kecemerlangan 2026</em></h1>
+        <p>
+          Semua guru boleh menonton ketiga-tiga sidang video rasmi (Jumaat Pagi, Jumaat Petang &amp; Sabtu Pagi) secara terus di laman ini.
+          Sila tulis <strong>Nama Penuh Guru</strong> di ruang komen bawah untuk menghantar maklum balas atau pengesahan slaid murid.
+        </p>
+      </div>
+      <div class="hero-actions">
+        <a class="btn-gold" href="#ruang-komen">💬 Terus ke Ruang Komen Guru</a>
+        <div class="hero-security-note">
+          <strong>🛡️ Perlindungan Tayangan Aktif</strong>
+          Video distrim menggunakan enkripsi HLS AES-128. Fungsi muat turun, klik kanan &amp; simpan fail telah dikunci sepenuhnya.
+        </div>
+      </div>
+    </section>
+
+    <!-- PILIHAN 3 SIDANG VIDEO -->
+    <section aria-label="Pilihan Sidang Video">
+      <div class="session-tabs-header">
+        <h2>🎬 Pilih Sidang Tayangan Video MAK 2026</h2>
+        <span>Klik mana-mana sidang di bawah untuk menukar tayangan secara langsung</span>
+      </div>
+
+      <div class="session-grid" role="tablist">
+        <button type="button" class="session-card active" data-session="s1" role="tab" aria-selected="true" id="tab-s1">
+          <img class="session-thumb" src="posters/s1.jpg" alt="Pratonton Sidang 1 Jumaat Pagi">
+          <div class="session-meta">
+            <span class="session-badge">SIDANG 1 · JUMAAT PAGI</span>
+            <strong>Hari Pertama (Pagi)</strong>
+            <small>27 Nov 2026 (Jumaat) · 6.30 Pagi – 10.40 Pagi · Durasi: 59m 42s</small>
+          </div>
+        </button>
+
+        <button type="button" class="session-card" data-session="s2" role="tab" aria-selected="false" id="tab-s2">
+          <img class="session-thumb" src="posters/s2.jpg" alt="Pratonton Sidang 2 Jumaat Petang">
+          <div class="session-meta">
+            <span class="session-badge">SIDANG 2 · JUMAAT PETANG</span>
+            <strong>Hari Pertama (Petang)</strong>
+            <small>27 Nov 2026 (Jumaat) · 12.50 Tgh Hari – 4.40 Ptg · Durasi: 33m 05s</small>
+          </div>
+        </button>
+
+        <button type="button" class="session-card" data-session="s3" role="tab" aria-selected="false" id="tab-s3">
+          <img class="session-thumb" src="posters/s3.jpg" alt="Pratonton Sidang 3 Sabtu Pagi">
+          <div class="session-meta">
+            <span class="session-badge">SIDANG 3 · SABTU PAGI</span>
+            <strong>Hari Kedua (Sabtu Pagi)</strong>
+            <small>28 Nov 2026 (Sabtu) · 6.40 Pagi – 11.30 Pagi · Durasi: 25m 01s</small>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- PANGGUNG VIDEO DILINDUNGI (TIADA MUAT TURUN) -->
+    <section id="panggung" class="cinema-card" aria-label="Pemain Video Tayangan Rasmi">
+      <div class="cinema-topbar">
+        <div class="cinema-now-playing">
+          <span class="sidang-pill" id="now-playing-badge">SIDANG 1 · JUMAAT PAGI</span>
+          <span id="now-playing-title">MAK 2026 — 1 Jumaat Pagi — Fail Utama (27 Nov 2026 · 6.30 Pagi – 10.40 Pagi)</span>
+        </div>
+        <div class="cinema-lock-tag">
+          🔒 Strim HLS Terenkripsi · Hanya Tayangan Sahaja
+        </div>
+      </div>
+
+      <div class="video-stage" id="video-stage">
+        <video
+          id="protected-video"
+          poster="posters/s1.jpg"
+          playsinline
+          webkit-playsinline
+          preload="metadata"
+          controlsList="nodownload nofullscreen noremoteplayback"
+          disablePictureInPicture
+          disableRemotePlayback
+          oncontextmenu="return false;"
+        ></video>
+
+        <!-- Tera Air Keselamatan Dinamik -->
+        <div class="security-watermark" id="security-watermark">
+          TAYANGAN RASMI SK RANGGU · MAK 2026 · DILARANG MUAT TURUN
+        </div>
+
+        <!-- Perisai Lutsinar Anti-Klik Kanan & Anti-Muat Turun -->
+        <div class="video-shield" id="video-shield" title="Klik untuk Main / Jeda Tayangan">
+          <button type="button" class="big-play-btn" id="big-play-btn" aria-label="Mainkan Video">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5.14v14l11-7-11-7z"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Penunjuk Pemuatan Strim -->
+        <div class="stream-loader" id="stream-loader" hidden>
+          <div class="spinner"></div>
+          <span id="loader-text">Memuatkan strim tayangan rasmi...</span>
+        </div>
+      </div>
+
+      <!-- KAWALAN PEMAIN TERSUAI (TIADA BUTANG MUAT TURUN) -->
+      <div class="player-controls">
+        <div class="timeline-row">
+          <input
+            type="range"
+            id="seek-slider"
+            class="seek-slider"
+            min="0"
+            max="1000"
+            value="0"
+            step="1"
+            aria-label="Garis masa tayangan video"
+          >
+          <span class="time-readout" id="time-readout">00:00 / 59:42</span>
+        </div>
+
+        <div class="controls-row">
+          <div class="controls-left">
+            <button type="button" class="ctrl-btn primary-play" id="btn-play-pause">
+              ▶ Main
+            </button>
+            <button type="button" class="ctrl-btn" id="btn-rewind" title="Undur 10 saat">
+              ⏪ -10s
+            </button>
+            <button type="button" class="ctrl-btn" id="btn-forward" title="Langkau 10 saat">
+              +10s ⏩
+            </button>
+            <div class="volume-wrap">
+              <button type="button" class="ctrl-btn" id="btn-mute" title="Suara / Senyap">
+                🔊
+              </button>
+              <input
+                type="range"
+                id="volume-slider"
+                class="volume-slider"
+                min="0"
+                max="1"
+                step="0.05"
+                value="1"
+                aria-label="Laraskan kelantangan suara"
+              >
+            </div>
+          </div>
+
+          <div class="controls-right">
+            <button type="button" class="ctrl-btn timestamp-comment-btn" id="btn-comment-timestamp" title="Tandakan masa slaid ini dan tulis komen di bawah">
+              ⏱ Komen Slaid Ini (<span id="live-btn-time">00:00</span>)
+            </button>
+            <label for="speed-select" class="sr-only" hidden>Kelajuan</label>
+            <select id="speed-select" class="speed-select" aria-label="Kelajuan Tayangan">
+              <option value="0.75">0.75x (Perlahan)</option>
+              <option value="1" selected>1.0x (Normal)</option>
+              <option value="1.25">1.25x (Laju)</option>
+              <option value="1.5">1.5x (Pantas)</option>
+            </select>
+            <button type="button" class="ctrl-btn" id="btn-fullscreen" title="Skrin Penuh">
+              ⛶ Skrin Penuh
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAHAGIAN BAWAH: RUANG KOMEN & CHAT LANGSUNG GURU -->
+    <section id="ruang-komen" class="chat-section" aria-label="Ruang Komen & Chat Langsung Guru">
+      <div class="chat-header">
+        <div>
+          <p class="eyebrow">RUANG KOMEN &amp; MAKLUM BALAS LANGSUNG GURU</p>
+          <h2>💬 Semakan &amp; Komen Guru Mengikut Sidang</h2>
+          <p>
+            Setiap guru <strong>wajib mengisi nama penuh terlebih dahulu</strong> sebelum menghantar komen supaya AJK dapat mengenal pasti siapa yang memberi maklum balas.
+          </p>
+        </div>
+        <div class="chat-stats-bar">
+          <div class="stat-pill">
+            <strong id="stat-total-comments">0</strong>
+            <span>Jumlah Komen</span>
+          </div>
+          <div class="stat-pill">
+            <strong id="stat-total-teachers">0</strong>
+            <span>Guru Komen</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LANGKAH 1: PENDAFTARAN NAMA GURU WAJIB -->
+      <div class="teacher-gate-box" id="teacher-gate-box">
+        <div id="gate-unverified-view">
+          <div class="gate-title-row">
+            <span class="gate-step-badge">⚠️ LANGKAH 1 (WAJIB): TULIS NAMA GURU DAHULU</span>
+            <span style="font-size:0.8rem;font-weight:700;color:#92400e;">Ruang komen akan dibuka selepas nama disahkan</span>
+          </div>
+          <form id="teacher-gate-form" class="gate-form-grid" autocomplete="on">
+            <label class="field-label">
+              Nama Penuh Guru (Wajib diisi dahulu) *
+              <input
+                type="text"
+                id="teacher-name-input"
+                class="field-input"
+                placeholder="Contoh: CIKGU SITI AMINAH BINTI HASSAN"
+                required
+                minlength="3"
+                maxlength="90"
+              >
+            </label>
+            <label class="field-label">
+              Peranan / Kelas / Unit
+              <select id="teacher-role-input" class="field-select">
+                <option value="Guru Kelas">Guru Kelas</option>
+                <option value="Guru Subjek / Akademik">Guru Subjek / Akademik</option>
+                <option value="AJK MAK 2026">AJK MAK 2026</option>
+                <option value="Pentadbir / GPK">Pentadbir / GPK</option>
+                <option value="Guru Prasekolah / Tahap 1">Guru Prasekolah / Tahap 1</option>
+                <option value="Guru Tahap 2">Guru Tahap 2</option>
+              </select>
+            </label>
+            <button type="submit" class="btn-confirm-name" id="btn-confirm-name">
+              ✓ Sahkan Nama &amp; Mula Komen
+            </button>
+          </form>
+        </div>
+
+        <div id="gate-verified-view" class="verified-bar" hidden>
+          <div class="verified-identity">
+            <div class="teacher-avatar" id="verified-avatar">CG</div>
+            <div>
+              <span class="gate-step-badge">✓ NAMA GURU DISAHKAN</span>
+              <div style="margin-top:4px;font-size:0.98rem;font-weight:800;color:#064e3b;">
+                Anda komen sebagai: <span id="verified-name-display">-</span>
+                <small id="verified-role-display" style="font-weight:700;color:#047857;margin-left:6px;"></small>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn-change-name" id="btn-change-name">
+            ✏️ Tukar Nama Guru
+          </button>
+        </div>
+      </div>
+
+      <!-- LANGKAH 2: BORANG TULIS KOMEN -->
+      <form id="comment-form" class="comment-composer">
+        <div class="composer-meta-grid">
+          <label class="field-label">
+            Sidang Video Berkaitan
+            <select id="comment-session-select" class="field-select">
+              <option value="s1">Sidang 1 — Jumaat Pagi (Hari Pertama Pagi)</option>
+              <option value="s2">Sidang 2 — Jumaat Petang (Hari Pertama Petang)</option>
+              <option value="s3">Sidang 3 — Sabtu Pagi (Hari Kedua)</option>
+            </select>
+          </label>
+
+          <label class="field-label">
+            Kategori Maklum Balas
+            <select id="comment-category-select" class="field-select">
+              <option value="Semakan Slaid / Ejaan Nama">Semakan Slaid / Ejaan Nama</option>
+              <option value="Gambar Murid">Gambar Murid</option>
+              <option value="Anugerah / Kelas">Anugerah / Kelas</option>
+              <option value="Pengesahan Lengkap (OK)">✓ Pengesahan Lengkap (OK)</option>
+              <option value="Catatan Umum">Catatan Umum</option>
+            </select>
+          </label>
+
+          <label class="field-label">
+            Cap Masa Dalam Video (Pilihan)
+            <div class="timestamp-input-group">
+              <input
+                type="text"
+                id="comment-timestamp-input"
+                class="field-input"
+                placeholder="Contoh: 12:45"
+                maxlength="12"
+              >
+              <button type="button" class="btn-grab-time" id="btn-grab-current-time" title="Ambil minit & saat semasa daripada video di atas">
+                ⏱ Masa Semasa
+              </button>
+            </div>
+          </label>
+        </div>
+
+        <label class="field-label">
+          Tulis Komen / Maklum Balas Guru *
+          <textarea
+            id="comment-text-input"
+            class="field-textarea"
+            rows="3"
+            placeholder="Sila sahkan nama anda di Langkah 1 di atas terlebih dahulu sebelum menulis komen..."
+            required
+          ></textarea>
+        </label>
+
+        <div class="composer-footer">
+          <span class="composer-hint" id="composer-status-hint">
+            🔒 Nama guru direkodkan secara automatik bersama setiap komen untuk rujukan Cikgu Fikrey.
+          </span>
+          <button type="submit" class="btn-send-comment" id="btn-submit-comment">
+            📨 Hantar Komen Guru
+          </button>
+        </div>
+      </form>
+
+      <!-- PANEL PENGESAN SIAPA KOMEN (UNTUK MEMUDAHKAN ADMIN DETECT SIAPA KOMEN) -->
+      <div class="teacher-detector-box">
+        <div class="detector-header">
+          <strong>🕵️‍♂️ Pengesan Guru Yang Telah Komen (Klik nama untuk tapis):</strong>
+          <span id="sync-indicator" style="font-size:0.78rem;color:var(--muted);font-weight:600;">
+            🟢 Sedia menerima &amp; memaparkan komen guru
+          </span>
+        </div>
+        <div class="teacher-chips" id="teacher-chips-container">
+          <span style="font-size:0.82rem;color:var(--muted);">Belum ada guru yang menghantar komen.</span>
+        </div>
+      </div>
+
+      <!-- BAR PENAPIS & EKSPORT KOMEN -->
+      <div class="chat-toolbar">
+        <div class="chat-filters">
+          <div class="filter-pills" role="group" aria-label="Tapis mengikut sidang">
+            <button type="button" class="pill-btn active" data-filter-session="all">Semua Sidang</button>
+            <button type="button" class="pill-btn" data-filter-session="s1">Sidang 1 (Jumaat Pagi)</button>
+            <button type="button" class="pill-btn" data-filter-session="s2">Sidang 2 (Jumaat Petang)</button>
+            <button type="button" class="pill-btn" data-filter-session="s3">Sidang 3 (Sabtu Pagi)</button>
+          </div>
+          <input
+            type="search"
+            id="comment-search-input"
+            class="chat-search-input"
+            placeholder="Cari nama guru atau isi komen..."
+            aria-label="Cari komen"
+          >
+        </div>
+
+        <div class="chat-export-actions">
+          <button type="button" class="btn-outline-sm" id="btn-refresh-comments" title="Muat semula komen terkini">
+            🔄 Segar Semula
+          </button>
+          <button type="button" class="btn-outline-sm" id="btn-copy-whatsapp" title="Salin ringkasan semua komen untuk ditampal ke WhatsApp">
+            📋 Salin Format WhatsApp
+          </button>
+          <button type="button" class="btn-outline-sm" id="btn-export-csv" title="Muat turun laporan komen guru dalam format CSV/Excel">
+            📊 Muat Turun Rekod Komen (CSV)
+          </button>
+        </div>
+      </div>
+
+      <!-- SENARAI KOMEN LANGSUNG -->
+      <div class="comments-feed" id="comments-feed" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <!-- TOAST NOTIFIKASI PERLINDUNGAN -->
+  <div class="security-toast" id="security-toast" role="status" aria-live="assertive" hidden></div>
+
+  <!-- FOOTER RASMI -->
+  <footer>
+    <div>
+      <strong>Sekolah Kebangsaan Ranggu</strong>
+      <address>Peti Surat 842, 91017 Tawau, Sabah · Kod Sekolah: XBA3037</address>
+    </div>
+    <div>
+      <span>Portal Tayangan Rasmi MAK 2026 · Developer: <strong>Mohammad Fikrey bin Abdul Gapar</strong> (momon-ux)</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
