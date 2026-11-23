@@ -114,7 +114,6 @@ function showToast(msg) {
 function initSecurityProtections() {
   document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
-    showToast('🔒 Tayangan Rasmi Sahaja — Muat turun atau klik kanan tidak dibenarkan.');
     return false;
   });
 
@@ -135,7 +134,6 @@ function initSecurityProtections() {
     ) {
       e.preventDefault();
       e.stopPropagation();
-      showToast('🔒 Mod Tayangan Dilindungi — Simpanan fail & muat turun video dikunci.');
       return false;
     }
 
@@ -151,9 +149,9 @@ function updateSecurityWatermark() {
   const wm = $('security-watermark');
   if (!wm) return;
   if (teacherProfile && teacherProfile.name) {
-    wm.textContent = `TAYANGAN RASMI SK RANGGU · MAK 2026 · ${teacherProfile.name} · DILARANG MUAT TURUN`;
+    wm.textContent = `TAYANGAN RASMI SK RANGGU · MAK 2026 · ${teacherProfile.name}`;
   } else {
-    wm.textContent = 'TAYANGAN RASMI SK RANGGU · MAK 2026 · DILARANG MUAT TURUN';
+    wm.textContent = 'TAYANGAN RASMI SK RANGGU · MAK 2026';
   }
 }
 
