@@ -76,6 +76,8 @@ let teacherProfile = null;
 let commentsList = [];
 let activeSessionFilter = 'all';
 let activeTeacherFilter = '';
+let activeAturcaraTab = 's1';
+let fsIdleTimer = null;
 let toastTimer = null;
 let syncInProgress = false;
 let isAdmin = false;
@@ -138,9 +140,36 @@ function initSecurityProtections() {
     }
 
     const tag = (document.activeElement && document.activeElement.tagName) || '';
-    if (key === ' ' && !['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(tag)) {
+    const inField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(tag);
+    if (inField) return;
+
+    if ((key === ' ' || key === 'k') && tag !== 'BUTTON') {
       e.preventDefault();
       togglePlayPause();
+      wakeFullscreenControls();
+    } else if (key === 'f' && !ctrlOrCmd && !e.altKey) {
+      e.preventDefault();
+      toggleCinemaFullscreen();
+    } else if (e.key === 'ArrowLeft' && !ctrlOrCmd && !e.altKey) {
+      const video = $('protected-video');
+      if (video) {
+        e.preventDefault();
+        video.currentTime = Math.max(0, (video.currentTime || 0) - 10);
+        wakeFullscreenControls();
+      }
+    } else if (e.key === 'ArrowRight' && !ctrlOrCmd && !e.altKey) {
+      const video = $('protected-video');
+      if (video) {
+        e.preventDefault();
+        const dur = video.duration || 99999;
+        video.currentTime = Math.min(dur, (video.currentTime || 0) + 10);
+        wakeFullscreenControls();
+      }
+    } else if (e.key === 'Escape') {
+      const container = $('panggung');
+      if (container && container.classList.contains('is-fullscreen')) {
+        exitCinemaFullscreen();
+      }
     }
   });
 }
@@ -551,6 +580,166 @@ function setLoader(visible, text) {
   if (loader) loader.hidden = !visible;
 }
 
+function setAturcaraTab(tabId) {
+  activeAturcaraTab = tabId || 's1';
+  document.querySelectorAll('.aturcara-tab-btn').forEach((btn) => {
+    const isMatch = btn.dataset.aturcaraTab === activeAturcaraTab;
+    btn.classList.toggle('active', isMatch);
+    btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+  });
+  document.querySelectorAll('[data-aturcara-panel]').forEach((panel) => {
+    const pid = panel.dataset.aturcaraPanel;
+    const visible = activeAturcaraTab === 'all' || pid === activeAturcaraTab;
+    panel.hidden = !visible;
+    panel.classList.toggle('active', visible);
+  });
+}
+
+function isCinemaFullscreen() {
+  const container = $('panggung');
+  return Boolean(
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    (container && container.classList.contains('is-fullscreen'))
+  );
+}
+
+function updateFullscreenButtonsUI() {
+  const fs = isCinemaFullscreen();
+  const btnBottom = $('btn-fullscreen');
+  const btnTop = $('btn-topbar-fullscreen');
+  if (btnBottom) {
+    btnBottom.textContent = fs ? '✕ Keluar Skrin Penuh' : '⛶ Skrin Penuh';
+  }
+  if (btnTop) {
+    btnTop.textContent = fs ? '✕ Keluar Skrin Penuh' : '⛶ Tayang Skrin Penuh';
+  }
+  if (!fs) {
+    const container = $('panggung');
+    if (container) container.classList.remove('fs-idle');
+    clearTimeout(fsIdleTimer);
+  } else {
+    wakeFullscreenControls();
+  }
+}
+
+function wakeFullscreenControls() {
+  const container = $('panggung');
+  if (!container) return;
+  container.classList.remove('fs-idle');
+  clearTimeout(fsIdleTimer);
+  if (!isCinemaFullscreen()) return;
+  const video = $('protected-video');
+  if (video && !video.paused && !video.ended) {
+    fsIdleTimer = setTimeout(() => {
+      if (isCinemaFullscreen() && !video.paused) {
+        container.classList.add('fs-idle');
+      }
+    }, 2400);
+  }
+}
+
+function enterCinemaFullscreen() {
+  const container = $('panggung');
+  const video = $('protected-video');
+  if (!container) return;
+
+  if (container.requestFullscreen) {
+    container.requestFullscreen().catch(() => {
+      container.classList.add('is-fullscreen');
+      document.body.style.overflow = 'hidden';
+      updateFullscreenButtonsUI();
+    });
+  } else if (container.webkitRequestFullscreen) {
+    try {
+      container.webkitRequestFullscreen();
+    } catch (_) {
+      container.classList.add('is-fullscreen');
+      document.body.style.overflow = 'hidden';
+      updateFullscreenButtonsUI();
+    }
+  } else {
+    container.classList.add('is-fullscreen');
+    document.body.style.overflow = 'hidden';
+    updateFullscreenButtonsUI();
+    if (video && video.webkitEnterFullscreen && /iPhone|iPod/i.test(navigator.userAgent)) {
+      try {
+        video.webkitEnterFullscreen();
+      } catch (_) {}
+    }
+  }
+
+  if (screen.orientation && screen.orientation.lock) {
+    screen.orientation.lock('landscape').catch(() => {});
+  }
+  updateFullscreenButtonsUI();
+}
+
+function exitCinemaFullscreen() {
+  const container = $('panggung');
+  if (container && container.classList.contains('is-fullscreen')) {
+    container.classList.remove('is-fullscreen', 'fs-idle');
+    document.body.style.overflow = '';
+  }
+  if (document.fullscreenElement && document.exitFullscreen) {
+    document.exitFullscreen().catch(() => {});
+  } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  }
+  if (screen.orientation && screen.orientation.unlock) {
+    try {
+      screen.orientation.unlock();
+    } catch (_) {}
+  }
+  updateFullscreenButtonsUI();
+}
+
+function toggleCinemaFullscreen() {
+  if (isCinemaFullscreen()) {
+    exitCinemaFullscreen();
+  } else {
+    enterCinemaFullscreen();
+  }
+}
+
+function initAturcaraSection() {
+  document.querySelectorAll('.aturcara-tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.aturcaraTab || 's1';
+      setAturcaraTab(tab);
+      if (tab !== 'all' && tab !== currentSessionId) {
+        userHasSwitchedSession = true;
+        loadVideoSession(tab, false);
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-play-session]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const sid = btn.dataset.playSession || 's1';
+      userHasSwitchedSession = true;
+      $('panggung').scrollIntoView({ behavior: 'smooth' });
+      loadVideoSession(sid, true);
+    });
+  });
+
+  document.querySelectorAll('[data-fullscreen-session]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const sid = btn.dataset.fullscreenSession || 's1';
+      userHasSwitchedSession = true;
+      if (sid !== currentSessionId) {
+        loadVideoSession(sid, true);
+      } else {
+        const video = $('protected-video');
+        if (video && video.paused) {
+          video.play().catch(() => {});
+        }
+      }
+      enterCinemaFullscreen();
+    });
+  });
+}
+
 function loadVideoSession(sessionId, autoPlay = false, seekToSeconds = null) {
   const session = SESSIONS[sessionId] || SESSIONS.s1;
   currentSessionId = session.id;
@@ -560,6 +749,10 @@ function loadVideoSession(sessionId, autoPlay = false, seekToSeconds = null) {
     btn.classList.toggle('active', active);
     btn.setAttribute('aria-selected', active ? 'true' : 'false');
   });
+
+  if (activeAturcaraTab !== 'all') {
+    setAturcaraTab(session.id);
+  }
 
   $('now-playing-badge').textContent = session.badge;
   $('now-playing-title').textContent = session.title;
@@ -665,6 +858,7 @@ function initVideoPlayer() {
   const stage = $('video-stage');
   const seekSlider = $('seek-slider');
   const playBtn = $('btn-play-pause');
+  const container = $('panggung');
 
   video.removeAttribute('controls');
   const observer = new MutationObserver(() => {
@@ -674,17 +868,38 @@ function initVideoPlayer() {
   });
   observer.observe(video, { attributes: true, attributeFilter: ['controls'] });
 
-  $('video-shield').addEventListener('click', togglePlayPause);
-  playBtn.addEventListener('click', togglePlayPause);
+  $('video-shield').addEventListener('click', () => {
+    togglePlayPause();
+    wakeFullscreenControls();
+  });
+  $('video-shield').addEventListener('dblclick', (e) => {
+    e.preventDefault();
+    toggleCinemaFullscreen();
+  });
+  playBtn.addEventListener('click', () => {
+    togglePlayPause();
+    wakeFullscreenControls();
+  });
+
+  if (container) {
+    ['mousemove', 'mousedown', 'touchstart', 'touchmove', 'click'].forEach((evt) => {
+      container.addEventListener(evt, wakeFullscreenControls, { passive: true });
+    });
+  }
+
+  document.addEventListener('fullscreenchange', updateFullscreenButtonsUI);
+  document.addEventListener('webkitfullscreenchange', updateFullscreenButtonsUI);
 
   video.addEventListener('play', () => {
     stage.classList.add('playing');
     playBtn.textContent = '⏸ Jeda';
+    wakeFullscreenControls();
   });
 
   video.addEventListener('pause', () => {
     stage.classList.remove('playing');
     playBtn.textContent = '▶ Main';
+    wakeFullscreenControls();
   });
 
   video.addEventListener('waiting', () => {
@@ -715,6 +930,7 @@ function initVideoPlayer() {
 
   seekSlider.addEventListener('input', () => {
     isSeeking = true;
+    wakeFullscreenControls();
   });
 
   seekSlider.addEventListener('change', () => {
@@ -725,50 +941,47 @@ function initVideoPlayer() {
       video.currentTime = (Number(seekSlider.value) / 1000) * dur;
     }
     isSeeking = false;
+    wakeFullscreenControls();
   });
 
   $('btn-rewind').addEventListener('click', () => {
     video.currentTime = Math.max(0, (video.currentTime || 0) - 10);
+    wakeFullscreenControls();
   });
 
   $('btn-forward').addEventListener('click', () => {
     const dur = video.duration || 99999;
     video.currentTime = Math.min(dur, (video.currentTime || 0) + 10);
+    wakeFullscreenControls();
   });
 
   $('btn-mute').addEventListener('click', () => {
     video.muted = !video.muted;
     $('btn-mute').textContent = video.muted ? '🔇' : '🔊';
+    wakeFullscreenControls();
   });
 
   $('volume-slider').addEventListener('input', (e) => {
     video.volume = Number(e.target.value);
     video.muted = video.volume === 0;
     $('btn-mute').textContent = video.muted ? '🔇' : '🔊';
+    wakeFullscreenControls();
   });
 
   $('speed-select').addEventListener('change', (e) => {
     video.playbackRate = Number(e.target.value || 1);
+    wakeFullscreenControls();
   });
 
-  $('btn-fullscreen').addEventListener('click', () => {
-    const container = $('panggung');
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      if (container.requestFullscreen) {
-        container.requestFullscreen();
-      } else if (container.webkitRequestFullscreen) {
-        container.webkitRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      }
-    }
-  });
+  $('btn-fullscreen').addEventListener('click', toggleCinemaFullscreen);
+  if ($('btn-topbar-fullscreen')) {
+    $('btn-topbar-fullscreen').addEventListener('click', toggleCinemaFullscreen);
+  }
 
   $('btn-comment-timestamp').addEventListener('click', () => {
+    if (isCinemaFullscreen()) {
+      exitCinemaFullscreen();
+    }
     video.pause();
     const curFormatted = formatTime(video.currentTime || 0);
     $('comment-session-select').value = currentSessionId;
@@ -1339,6 +1552,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSecurityProtections();
   initAdminPanel();
   initTeacherGate();
+  initAturcaraSection();
   initVideoPlayer();
   initCommentSystem();
 });

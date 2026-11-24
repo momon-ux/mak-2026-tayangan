@@ -1636,3 +1636,717 @@ address {
   justify-content: center;
   font-size: 0.9rem;
 }
+
+/* ==========================================================================
+   PAUTAN NAVIGASI PANTAS & BUTANG MOD SLAID TAYANGAN (SKRIN PENUH)
+   ========================================================================== */
+.badge-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #f0f4fd;
+  border: 1px solid #c5d3f0;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+.badge-nav-link:hover {
+  background: var(--ink);
+  color: var(--gold-light);
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
+.btn-hero-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--white);
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(231, 189, 101, 0.55);
+  text-decoration: none;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.btn-hero-secondary:hover {
+  background: rgba(231, 189, 101, 0.22);
+  transform: translateY(-1px);
+}
+
+.cinema-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-topbar-fullscreen {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(120deg, #dcb35a, #f3d893, #cf9f43);
+  color: #0b153f;
+  border: 1px solid #fae6b6;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+  transition: transform 0.15s, filter 0.15s;
+}
+
+.btn-topbar-fullscreen:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+}
+
+.ctrl-btn.fullscreen-cta-btn {
+  background: linear-gradient(120deg, #dcb35a, #f3d893);
+  color: #0b153f;
+  border-color: #fae6b6;
+  font-weight: 800;
+}
+
+.ctrl-btn.fullscreen-cta-btn:hover {
+  filter: brightness(1.08);
+}
+
+/* ==========================================================================
+   MOD SLAID TAYANGAN SKRIN PENUH (FULLSCREEN PRESENTATION MODE)
+   Sesuai untuk Pancaran Skrin Dewan / Projektor Laptop & Telefon Pintar
+   ========================================================================== */
+#panggung:fullscreen,
+#panggung:-webkit-full-screen,
+#panggung.is-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: #000000 !important;
+  z-index: 99999 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+#panggung:fullscreen .video-stage,
+#panggung:-webkit-full-screen .video-stage,
+#panggung.is-fullscreen .video-stage {
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: auto !important;
+  flex: 1 1 auto !important;
+  background: #000000 !important;
+}
+
+#panggung:fullscreen .video-stage video,
+#panggung:-webkit-full-screen .video-stage video,
+#panggung.is-fullscreen .video-stage video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+/* Sembunyikan watermark semasa mod skrin penuh supaya slaid tayangan dewan bersih 100% */
+#panggung:fullscreen .security-watermark,
+#panggung:-webkit-full-screen .security-watermark,
+#panggung.is-fullscreen .security-watermark {
+  display: none !important;
+}
+
+#panggung:fullscreen .cinema-topbar,
+#panggung:-webkit-full-screen .cinema-topbar,
+#panggung.is-fullscreen .cinema-topbar {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 25;
+  background: linear-gradient(180deg, rgba(4, 8, 24, 0.88) 0%, rgba(4, 8, 24, 0) 100%) !important;
+  border-bottom: none !important;
+  padding: 16px 24px 28px !important;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#panggung:fullscreen .player-controls,
+#panggung:-webkit-full-screen .player-controls,
+#panggung.is-fullscreen .player-controls {
+  position: absolute !important;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 25;
+  background: linear-gradient(0deg, rgba(4, 8, 24, 0.92) 0%, rgba(7, 14, 43, 0.78) 70%, rgba(4, 8, 24, 0) 100%) !important;
+  border-top: none !important;
+  padding: 26px 24px 18px !important;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Auto-sembunyi bar kawalan & kursor tetikus apabila tayangan slaid sedang berjalan */
+#panggung.fs-idle .cinema-topbar {
+  opacity: 0 !important;
+  transform: translateY(-12px);
+  pointer-events: none !important;
+}
+
+#panggung.fs-idle .player-controls {
+  opacity: 0 !important;
+  transform: translateY(12px);
+  pointer-events: none !important;
+}
+
+#panggung.fs-idle .video-shield {
+  cursor: none !important;
+}
+
+/* ==========================================================================
+   BAHAGIAN ATURCARA MAJLIS APRESIASI KECEMERLANGAN 2026 (LAMPIRAN 2)
+   Tema: Biru Diraja, Emas & Batik
+   ========================================================================== */
+.aturcara-section {
+  background: var(--white);
+  border: 2px solid #c9d5ee;
+  border-top: 5px solid var(--gold);
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 14px 36px rgba(13, 25, 70, 0.08);
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.aturcara-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1.5px solid var(--line);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.aturcara-header .eyebrow {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  color: var(--royal);
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.aturcara-header h2 {
+  font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.aturcara-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  max-width: 640px;
+  line-height: 1.55;
+}
+
+.aturcara-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.aturcara-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 15px;
+  border-radius: 12px;
+  background: #f3f6fc;
+  border: 1.5px solid #c8d4ec;
+  color: var(--ink);
+  font-size: 0.83rem;
+  font-weight: 800;
+  transition: all 0.18s ease;
+}
+
+.aturcara-tab-btn:hover {
+  border-color: var(--royal-bright);
+  background: #e9effd;
+  transform: translateY(-1px);
+}
+
+.aturcara-tab-btn.active {
+  background: linear-gradient(135deg, #0d1b52 0%, #17348c 100%);
+  color: var(--gold-light);
+  border-color: var(--gold);
+  box-shadow: 0 8px 20px rgba(13, 25, 70, 0.22);
+}
+
+.aturcara-panels-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.aturcara-card {
+  border: 2px solid #d4def2;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--white);
+  box-shadow: 0 8px 24px rgba(13, 25, 70, 0.06);
+}
+
+.aturcara-card-banner {
+  position: relative;
+  background: linear-gradient(120deg, #070f2e 0%, #102466 58%, #183996 100%);
+  color: var(--white);
+  padding: 22px 24px;
+  border-bottom: 3px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+.aturcara-card-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("batik.svg") repeat;
+  background-size: 120px;
+  opacity: 0.13;
+  pointer-events: none;
+}
+
+.aturcara-card-banner > * {
+  position: relative;
+  z-index: 1;
+}
+
+.aturcara-sidang-pill {
+  display: inline-block;
+  background: var(--gold);
+  color: #0b153f;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.aturcara-card-title-group h3 {
+  margin: 0 0 10px;
+  font-size: clamp(1.08rem, 1.8vw, 1.32rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.aturcara-meta-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.meta-pill-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(231, 189, 101, 0.2);
+  border: 1px solid rgba(231, 189, 101, 0.6);
+  color: var(--gold-light);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 999px;
+}
+
+.meta-pill-attendance {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(16, 185, 129, 0.22);
+  border: 1px solid rgba(52, 211, 153, 0.65);
+  color: #a7f3d0;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 4px 11px;
+  border-radius: 999px;
+}
+
+.meta-pill-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #dbe4ff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 999px;
+}
+
+.aturcara-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-aturcara-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  color: var(--white);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.btn-aturcara-play:hover {
+  background: rgba(255, 255, 255, 0.24);
+  transform: translateY(-1px);
+}
+
+.btn-aturcara-fs {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(120deg, #dcb35a, #f3d893, #cf9f43);
+  border: 1px solid #fae6b6;
+  color: #0b153f;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+  transition: filter 0.15s, transform 0.15s;
+}
+
+.btn-aturcara-fs:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+}
+
+.aturcara-table-head {
+  display: grid;
+  grid-template-columns: 185px 1fr;
+  gap: 18px;
+  padding: 11px 22px;
+  background: #eef3fc;
+  border-bottom: 1.5px solid #d0dcf2;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--royal);
+  text-transform: uppercase;
+}
+
+.aturcara-timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.aturcara-row {
+  display: grid;
+  grid-template-columns: 185px 1fr;
+  gap: 18px;
+  padding: 14px 22px;
+  border-bottom: 1px solid #e6ecf8;
+  align-items: start;
+  transition: background 0.15s;
+}
+
+.aturcara-row:last-child {
+  border-bottom: none;
+}
+
+.aturcara-row:hover {
+  background: #f8faff;
+}
+
+.aturcara-row.highlight-row {
+  background: linear-gradient(90deg, #fffdf6 0%, #fff9e6 100%);
+  border-left: 4px solid var(--gold-deep);
+  padding-left: 18px;
+}
+
+.aturcara-row.break-row {
+  background: #f8fafc;
+}
+
+.aturcara-time {
+  display: flex;
+  align-items: center;
+}
+
+.time-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #eef2ff;
+  border: 1px solid #c7d5f8;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.time-badge.gold {
+  background: linear-gradient(135deg, #0d1946 0%, #18348c 100%);
+  border-color: var(--gold);
+  color: var(--gold-light);
+  box-shadow: 0 3px 10px rgba(13, 25, 70, 0.15);
+}
+
+.time-badge.muted {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.aturcara-detail {
+  min-width: 0;
+}
+
+.aturcara-detail > strong {
+  display: block;
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.aturcara-sublist {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 8px;
+}
+
+.aturcara-sublist li {
+  position: relative;
+  padding: 8px 12px 8px 28px;
+  background: var(--white);
+  border: 1px solid #dce5f7;
+  border-radius: 9px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.4;
+  box-shadow: 0 2px 5px rgba(13, 25, 70, 0.03);
+}
+
+.aturcara-sublist li::before {
+  content: "✦";
+  position: absolute;
+  left: 10px;
+  top: 8px;
+  color: var(--gold-deep);
+  font-size: 0.82rem;
+}
+
+.medal-badges-row,
+.koko-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.medal-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.medal-pill.platinum {
+  background: linear-gradient(135deg, #0f172a, #1e3a8a);
+  color: #e0f2fe;
+  border: 1px solid #7dd3fc;
+}
+
+.medal-pill.gold {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #78350f;
+  border: 1px solid #f59e0b;
+}
+
+.medal-pill.silver {
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  color: #1e293b;
+  border: 1px solid #94a3b8;
+}
+
+.koko-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  color: var(--royal);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.koko-tag.special {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.aturcara-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 22px;
+  background: #f4f7fd;
+  border-top: 1.5px solid #d6def0;
+  font-size: 0.84rem;
+  color: var(--ink);
+  flex-wrap: wrap;
+}
+
+.aturcara-back-top {
+  color: var(--royal);
+  font-weight: 800;
+  text-decoration: none;
+  font-size: 0.82rem;
+}
+
+.aturcara-back-top:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   OPTIMASI RESPONSIF MESRA TELEFON PINTAR & LAPTOP
+   ========================================================================== */
+@media (max-width: 820px) {
+  header {
+    padding: 14px 16px;
+  }
+  .header-badges {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .aturcara-section {
+    padding: 20px 16px;
+  }
+  .aturcara-tabs {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .aturcara-tab-btn {
+    justify-content: center;
+    text-align: center;
+    padding: 10px 10px;
+    font-size: 0.79rem;
+  }
+  .aturcara-card-banner {
+    padding: 18px 16px;
+  }
+  .aturcara-card-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .aturcara-table-head {
+    display: none;
+  }
+  .aturcara-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 14px 16px;
+  }
+  .aturcara-sublist {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  main {
+    padding: 14px 12px 48px;
+  }
+  .brand {
+    font-size: 0.85rem;
+  }
+  .school-logo {
+    width: 44px;
+    height: 54px;
+  }
+  .badge-nav-link {
+    padding: 6px 10px;
+    font-size: 0.73rem;
+  }
+  .hero-actions {
+    width: 100%;
+  }
+  .aturcara-card-actions {
+    grid-template-columns: 1fr;
+  }
+  .cinema-topbar {
+    padding: 10px 14px;
+  }
+  .cinema-topbar-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .btn-topbar-fullscreen {
+    flex: 1;
+    justify-content: center;
+  }
+  .player-controls {
+    padding: 10px 12px 12px;
+  }
+  .controls-left,
+  .controls-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .ctrl-btn.fullscreen-cta-btn {
+    flex: 1;
+  }
+}
+
