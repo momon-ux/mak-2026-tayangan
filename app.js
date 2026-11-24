@@ -1,10 +1,10 @@
 'use strict';
 
 /* ==========================================================================
-   PORTAL TAYANGAN RASMI & SEMAKAN GURU — MAK 2026 SK RANGGU
-   - Strim HLS Terenkripsi AES-128 (Hanya Tayangan Sahaja · Tanpa Muat Turun)
-   - Panel Kawalan Admin (Tukar Video, Muat Naik Video, Kawal Sidang & Komen)
-   - Ruang Komen & Chat Langsung Guru (Wajib Nama Guru Dahulu)
+   PORTAL TAYANGAN RASMI & ATURCARA MAJLIS — MAK 2026 SK RANGGU
+   - Navigasi Multi-Halaman Kompak (Halaman Tayangan Video & Halaman Aturcara)
+   - Mod Slaid Tayangan Skrin Penuh (Fullscreen Presentation Mode)
+   - Strim HLS Terenkripsi AES-128 & Kawalan Pentadbir (🔒)
    ========================================================================== */
 
 const DEFAULT_SESSIONS = {
@@ -13,7 +13,7 @@ const DEFAULT_SESSIONS = {
     badge: 'SIDANG 1 · JUMAAT PAGI',
     cardTitle: 'Hari Pertama (Pagi)',
     shortName: 'Sidang 1 (Jumaat Pagi)',
-    subtitle: '27 Nov 2026 (Jumaat) · 6.30 Pagi – 10.40 Pagi · Durasi: 48m 02s',
+    subtitle: '27 Nov 2026 · 6.30 Pagi – 10.40 Pagi (48:02)',
     title: 'MAK 2026 — 1 Jumaat Pagi — Fail Utama (27 Nov 2026 · 6.30 Pagi – 10.40 Pagi)',
     playlist: 'streams/s1/index.m3u8?v=20261124',
     poster: 'posters/s1.jpg?v=20261124',
@@ -24,7 +24,7 @@ const DEFAULT_SESSIONS = {
     badge: 'SIDANG 2 · JUMAAT PETANG',
     cardTitle: 'Hari Pertama (Petang)',
     shortName: 'Sidang 2 (Jumaat Petang)',
-    subtitle: '27 Nov 2026 (Jumaat) · 12.50 Tgh Hari – 4.40 Ptg · Durasi: 33m 05s',
+    subtitle: '27 Nov 2026 · 12.50 Tgh Hari – 4.40 Ptg (33:05)',
     title: 'MAK 2026 — 2 Jumaat Petang — Fail Utama (27 Nov 2026 · 12.50 Tgh Hari – 4.40 Ptg)',
     playlist: 'streams/s2/index.m3u8?v=20261124',
     poster: 'posters/s2.jpg?v=20261124',
@@ -35,7 +35,7 @@ const DEFAULT_SESSIONS = {
     badge: 'SIDANG 3 · SABTU PAGI',
     cardTitle: 'Hari Kedua (Sabtu Pagi)',
     shortName: 'Sidang 3 (Sabtu Pagi)',
-    subtitle: '28 Nov 2026 (Sabtu) · 6.40 Pagi – 11.30 Pagi · Durasi: 36m 40s',
+    subtitle: '28 Nov 2026 · 6.40 Pagi – 11.30 Pagi (36:40)',
     title: 'MAK 2026 — 3 Sabtu Pagi — Fail Utama (28 Nov 2026 · 6.40 Pagi – 11.30 Pagi)',
     playlist: 'streams/s3/index.m3u8?v=20261124',
     poster: 'posters/s3.jpg?v=20261124',
@@ -46,8 +46,6 @@ const DEFAULT_SESSIONS = {
 let SESSIONS = JSON.parse(JSON.stringify(DEFAULT_SESSIONS));
 
 const STORAGE_KEYS = {
-  TEACHER_PROFILE: 'mak2026_teacher_profile_v1',
-  COMMENTS_CACHE: 'mak2026_comments_cache_v1',
   LIVE_CONFIG_CACHE: 'mak2026_live_config_v1',
   ADMIN_SESSION: 'mak2026_admin_auth_v1'
 };
@@ -57,7 +55,6 @@ const ADMIN_HASH = 'f4cf6f28cd1d68e6394b136e8877ab487018648509770a73153bf0af2b31
 const CLOUD_SYNC_CONFIG = {
   repoApiBase: 'https://api.github.com/repos/momon-ux/mak-2026-tayangan',
   issuesUrl: 'https://api.github.com/repos/momon-ux/mak-2026-tayangan/issues/1',
-  issuesCommentsUrl: 'https://api.github.com/repos/momon-ux/mak-2026-tayangan/issues/1/comments',
   rawBaseUrl: 'https://raw.githubusercontent.com/momon-ux/mak-2026-tayangan/main',
   keyBytes: [110, 111, 118, 102, 79, 126, 74, 80, 107, 122, 81, 113, 117, 73, 80, 83, 105, 107, 121, 58, 129, 61, 76, 78, 61, 91, 82, 62, 59, 96, 127, 72, 121, 119, 56, 124, 127, 93, 91, 119]
 };
@@ -67,28 +64,22 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 }[c]));
 
+let currentPage = 'tayangan';
 let currentSessionId = 's1';
 let userHasSwitchedSession = false;
 let hlsInstance = null;
 let currentBlobUrl = null;
 let isSeeking = false;
-let teacherProfile = null;
-let commentsList = [];
-let activeSessionFilter = 'all';
-let activeTeacherFilter = '';
 let activeAturcaraTab = 's1';
 let fsIdleTimer = null;
 let toastTimer = null;
-let syncInProgress = false;
 let isAdmin = false;
 let adminMethod = 'upload';
 
 let livePortalConfig = {
   defaultSession: 's1',
   announcement: '',
-  sessions: {},
-  resolvedComments: {},
-  deletedComments: {}
+  sessions: {}
 };
 
 function getCloudHeader() {
@@ -99,9 +90,6 @@ function getCloudHeader() {
   };
 }
 
-/* --------------------------------------------------------------------------
-   1. PERLINDUNGAN ANTI-MUAT TURUN & KESELAMATAN LAMAN
-   -------------------------------------------------------------------------- */
 function showToast(msg) {
   const el = $('security-toast');
   if (!el) return;
@@ -110,9 +98,137 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     el.hidden = true;
-  }, 3800);
+  }, 3600);
 }
 
+/* --------------------------------------------------------------------------
+   1. NAVIGASI MULTI-HALAMAN ("BUKA PAGE LAIN" — TAYANGAN vs ATURCARA)
+   -------------------------------------------------------------------------- */
+function switchPage(pageId, updateHash = true) {
+  const target = pageId === 'aturcara' ? 'aturcara' : 'tayangan';
+  currentPage = target;
+
+  const pageTayangan = $('page-tayangan');
+  const pageAturcara = $('page-aturcara');
+  if (pageTayangan) {
+    pageTayangan.hidden = target !== 'tayangan';
+    pageTayangan.classList.toggle('active', target === 'tayangan');
+  }
+  if (pageAturcara) {
+    pageAturcara.hidden = target !== 'aturcara';
+    pageAturcara.classList.toggle('active', target === 'aturcara');
+  }
+
+  document.querySelectorAll('.page-nav-btn').forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.pageTarget === target);
+  });
+
+  if (target === 'aturcara') {
+    const video = $('protected-video');
+    if (video && !video.paused) {
+      video.pause();
+    }
+    setAturcaraTab(currentSessionId);
+  }
+
+  if (updateHash) {
+    try {
+      const nextHash = `#${target}`;
+      if (window.location.hash !== nextHash) {
+        history.pushState(null, '', nextHash);
+      }
+    } catch (_) {}
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setAturcaraTab(tabId) {
+  activeAturcaraTab = ['s1', 's2', 's3'].includes(tabId) ? tabId : 's1';
+  document.querySelectorAll('.aturcara-tab-btn').forEach((btn) => {
+    const isMatch = btn.dataset.aturcaraTab === activeAturcaraTab;
+    btn.classList.toggle('active', isMatch);
+    btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+  });
+  document.querySelectorAll('[data-aturcara-panel]').forEach((panel) => {
+    const pid = panel.dataset.aturcaraPanel;
+    const visible = pid === activeAturcaraTab;
+    panel.hidden = !visible;
+    panel.classList.toggle('active', visible);
+  });
+}
+
+function initPageNavigation() {
+  document.querySelectorAll('.page-nav-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      switchPage(btn.dataset.pageTarget || 'tayangan');
+    });
+  });
+
+  if ($('btn-open-current-aturcara')) {
+    $('btn-open-current-aturcara').addEventListener('click', () => {
+      if (isCinemaFullscreen()) {
+        exitCinemaFullscreen();
+      }
+      setAturcaraTab(currentSessionId);
+      switchPage('aturcara');
+    });
+  }
+
+  document.querySelectorAll('.aturcara-tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.aturcaraTab || 's1';
+      setAturcaraTab(tab);
+      if (tab !== currentSessionId) {
+        userHasSwitchedSession = true;
+        loadVideoSession(tab, false);
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-play-session]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const sid = btn.dataset.playSession || 's1';
+      userHasSwitchedSession = true;
+      switchPage('tayangan');
+      loadVideoSession(sid, true);
+    });
+  });
+
+  document.querySelectorAll('[data-fullscreen-session]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const sid = btn.dataset.fullscreenSession || 's1';
+      userHasSwitchedSession = true;
+      switchPage('tayangan');
+      if (sid !== currentSessionId) {
+        loadVideoSession(sid, true);
+      } else {
+        const video = $('protected-video');
+        if (video && video.paused) {
+          video.play().catch(() => {});
+        }
+      }
+      enterCinemaFullscreen();
+    });
+  });
+
+  const initialHash = (window.location.hash || '').replace('#', '').toLowerCase();
+  if (initialHash === 'aturcara' || initialHash === 'aturcara-majlis') {
+    switchPage('aturcara', false);
+  }
+
+  window.addEventListener('hashchange', () => {
+    const h = (window.location.hash || '').replace('#', '').toLowerCase();
+    if (h === 'aturcara' || h === 'aturcara-majlis') {
+      if (currentPage !== 'aturcara') switchPage('aturcara', false);
+    } else if (h === 'tayangan' || h === '') {
+      if (currentPage !== 'tayangan') switchPage('tayangan', false);
+    }
+  });
+}
+
+/* --------------------------------------------------------------------------
+   2. PERLINDUNGAN LAMAN & PINTASAN PAPAN KEKUNCI TAYANGAN SLAID
+   -------------------------------------------------------------------------- */
 function initSecurityProtections() {
   document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
@@ -143,49 +259,41 @@ function initSecurityProtections() {
     const inField = ['INPUT', 'TEXTAREA', 'SELECT'].includes(tag);
     if (inField) return;
 
-    if ((key === ' ' || key === 'k') && tag !== 'BUTTON') {
-      e.preventDefault();
-      togglePlayPause();
-      wakeFullscreenControls();
-    } else if (key === 'f' && !ctrlOrCmd && !e.altKey) {
-      e.preventDefault();
-      toggleCinemaFullscreen();
-    } else if (e.key === 'ArrowLeft' && !ctrlOrCmd && !e.altKey) {
-      const video = $('protected-video');
-      if (video) {
+    if (currentPage === 'tayangan') {
+      if ((key === ' ' || key === 'k') && tag !== 'BUTTON') {
         e.preventDefault();
-        video.currentTime = Math.max(0, (video.currentTime || 0) - 10);
+        togglePlayPause();
         wakeFullscreenControls();
-      }
-    } else if (e.key === 'ArrowRight' && !ctrlOrCmd && !e.altKey) {
-      const video = $('protected-video');
-      if (video) {
+      } else if (key === 'f' && !ctrlOrCmd && !e.altKey) {
         e.preventDefault();
-        const dur = video.duration || 99999;
-        video.currentTime = Math.min(dur, (video.currentTime || 0) + 10);
-        wakeFullscreenControls();
-      }
-    } else if (e.key === 'Escape') {
-      const container = $('panggung');
-      if (container && container.classList.contains('is-fullscreen')) {
-        exitCinemaFullscreen();
+        toggleCinemaFullscreen();
+      } else if (e.key === 'ArrowLeft' && !ctrlOrCmd && !e.altKey) {
+        const video = $('protected-video');
+        if (video) {
+          e.preventDefault();
+          video.currentTime = Math.max(0, (video.currentTime || 0) - 10);
+          wakeFullscreenControls();
+        }
+      } else if (e.key === 'ArrowRight' && !ctrlOrCmd && !e.altKey) {
+        const video = $('protected-video');
+        if (video) {
+          e.preventDefault();
+          const dur = video.duration || 99999;
+          video.currentTime = Math.min(dur, (video.currentTime || 0) + 10);
+          wakeFullscreenControls();
+        }
+      } else if (e.key === 'Escape') {
+        const container = $('panggung');
+        if (container && container.classList.contains('is-fullscreen')) {
+          exitCinemaFullscreen();
+        }
       }
     }
   });
 }
 
-function updateSecurityWatermark() {
-  const wm = $('security-watermark');
-  if (!wm) return;
-  if (teacherProfile && teacherProfile.name) {
-    wm.textContent = `TAYANGAN RASMI SK RANGGU · MAK 2026 · ${teacherProfile.name}`;
-  } else {
-    wm.textContent = 'TAYANGAN RASMI SK RANGGU · MAK 2026';
-  }
-}
-
 /* --------------------------------------------------------------------------
-   2. KONFIGURASI LANGSUNG AWAN & PANEL KAWALAN ADMIN (TUKAR VIDEO)
+   3. KONFIGURASI AWAN & PANEL KAWALAN ADMIN (🔒)
    -------------------------------------------------------------------------- */
 function applyLiveConfigToSessions() {
   SESSIONS = JSON.parse(JSON.stringify(DEFAULT_SESSIONS));
@@ -198,7 +306,6 @@ function applyLiveConfigToSessions() {
         id: sid
       };
     }
-    // Kemas kini teks pada kad tab di halaman
     const card = $(`tab-${sid}`);
     if (card) {
       const strong = card.querySelector('strong');
@@ -208,19 +315,17 @@ function applyLiveConfigToSessions() {
     }
   }
 
-  // Kemas kini banner pengumuman pentadbir
   const annBar = $('live-announcement-bar');
   if (annBar) {
     const annText = String(livePortalConfig.announcement || '').trim();
     if (annText) {
-      annBar.innerHTML = `<span>📢 <strong>Makluman Pentadbir MAK 2026:</strong> ${esc(annText)}</span>`;
+      annBar.innerHTML = `<span>📢 <strong>Makluman MAK 2026:</strong> ${esc(annText)}</span>`;
       annBar.hidden = false;
     } else {
       annBar.hidden = true;
     }
   }
 
-  // Kemas kini tajuk sidang yang sedang aktif
   const cur = SESSIONS[currentSessionId] || SESSIONS.s1;
   if ($('now-playing-badge')) $('now-playing-badge').textContent = cur.badge;
   if ($('now-playing-title')) $('now-playing-title').textContent = cur.title;
@@ -268,9 +373,7 @@ async function fetchLiveConfigFromCloud(isInitial = false) {
       livePortalConfig = {
         defaultSession: parsed.defaultSession || 's1',
         announcement: parsed.announcement || '',
-        sessions: parsed.sessions || {},
-        resolvedComments: parsed.resolvedComments || {},
-        deletedComments: parsed.deletedComments || {}
+        sessions: parsed.sessions || {}
       };
       try {
         localStorage.setItem(STORAGE_KEYS.LIVE_CONFIG_CACHE, JSON.stringify(livePortalConfig));
@@ -290,7 +393,7 @@ async function fetchLiveConfigFromCloud(isInitial = false) {
 }
 
 async function saveLiveConfigToCloud() {
-  const payload = `Saluran storan masa nyata untuk komen dan konfigurasi video MAK 2026.\nCONFIG_JSON:${JSON.stringify(livePortalConfig)}`;
+  const payload = `Saluran storan konfigurasi video MAK 2026.\nCONFIG_JSON:${JSON.stringify(livePortalConfig)}`;
   const res = await fetch(CLOUD_SYNC_CONFIG.issuesUrl, {
     method: 'PATCH',
     headers: {
@@ -327,10 +430,10 @@ function fileToBase64(file, onProgress) {
 }
 
 async function uploadVideoFileToGitHub(file, sessionId, onProgress) {
-  const maxBytes = 95 * 1024 * 1024; // 95 MB had GitHub Contents API melalui pelayar
+  const maxBytes = 95 * 1024 * 1024;
   if (file.size > maxBytes) {
     throw new Error(
-      `Saiz fail ini ialah ${(file.size / (1024 * 1024)).toFixed(1)} MB (melebihi had 95 MB muat naik terus pelayar). Sila dwi-klik aplikasi "Tukar-Video-Admin-MAK2026.command" di Desktop Mac anda untuk menukar video besar (1GB–5GB) ke strim HLS secara automatik.`
+      `Saiz fail ini ialah ${(file.size / (1024 * 1024)).toFixed(1)} MB (melebihi had 95 MB pelayar). Sila dwi-klik aplikasi "Tukar-Video-Admin-MAK2026.command" di Desktop Mac anda.`
     );
   }
   if (onProgress) onProgress(10, 'Membaca fail video...');
@@ -361,7 +464,6 @@ async function uploadVideoFileToGitHub(file, sessionId, onProgress) {
 }
 
 function initAdminPanel() {
-  // Muat konfigurasi tempatan terlebih dahulu jika ada
   try {
     const cachedCfg = localStorage.getItem(STORAGE_KEYS.LIVE_CONFIG_CACHE);
     if (cachedCfg) {
@@ -389,15 +491,13 @@ function initAdminPanel() {
       $('admin-announcement-input').value = livePortalConfig.announcement || '';
       renderAdminSummary();
     }
-    renderCommentsSection();
   };
 
   $('btn-toggle-admin').addEventListener('click', () => {
     panel.hidden = !panel.hidden;
     syncAdminView();
-    if (!panel.hidden) {
-      panel.scrollIntoView({ behavior: 'smooth' });
-      if (!isAdmin) $('admin-pin-input').focus();
+    if (!panel.hidden && !isAdmin) {
+      $('admin-pin-input').focus();
     }
   });
 
@@ -421,9 +521,9 @@ function initAdminPanel() {
       } catch (_) {}
       $('admin-pin-input').value = '';
       syncAdminView();
-      showToast('🔓 Log masuk Pentadbir berjaya! Anda kini boleh menukar video dan mengurus komen.');
+      showToast('🔓 Akses dibenarkan.');
     } else {
-      showToast('⚠️ Kod akses pentadbir tidak sah. Sila cuba semula.');
+      showToast('⚠️ Kod akses tidak sah.');
       $('admin-pin-input').select();
     }
   });
@@ -435,15 +535,13 @@ function initAdminPanel() {
     } catch (_) {}
     syncAdminView();
     panel.hidden = true;
-    showToast('🚪 Anda telah log keluar daripada mod Admin.');
+    showToast('🚪 Log keluar berjaya.');
   });
 
-  // Tukar sidang dalam dropdown admin
   $('admin-target-session').addEventListener('change', (e) => {
     populateAdminFormForSession(e.target.value);
   });
 
-  // Tukar tab kaedah (Muat Naik Fail vs Guna Pautan URL)
   document.querySelectorAll('.method-tab').forEach((tab) => {
     tab.addEventListener('click', () => {
       adminMethod = tab.dataset.method || 'upload';
@@ -453,7 +551,6 @@ function initAdminPanel() {
     });
   });
 
-  // Apabila Admin memilih fail video baharu, kira durasi secara automatik
   $('admin-video-file').addEventListener('change', (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -468,7 +565,6 @@ function initAdminPanel() {
     tempVid.src = URL.createObjectURL(file);
   });
 
-  // Simpan & Tukar Video Sidang
   $('admin-video-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!isAdmin) return;
@@ -495,7 +591,7 @@ function initAdminPanel() {
       }
 
       if (!finalVideoUrl) {
-        throw new Error('Sila pilih fail video baharu atau masukkan pautan video/strim.');
+        throw new Error('Sila pilih fail video baharu atau masukkan pautan strim.');
       }
 
       livePortalConfig.sessions = livePortalConfig.sessions || {};
@@ -509,7 +605,7 @@ function initAdminPanel() {
       await saveLiveConfigToCloud();
       loadVideoSession(targetSid, true);
       $('admin-video-file').value = '';
-      showToast(`✅ Video ${SESSIONS[targetSid].shortName} berjaya ditukar & dikemas kini secara LIVE kepada semua guru!`);
+      showToast(`✅ Video ${SESSIONS[targetSid].shortName} berjaya dikemas kini secara LIVE!`);
     } catch (err) {
       showToast(`⚠️ ${err.message || 'Gagal menukar video.'}`);
     } finally {
@@ -520,7 +616,6 @@ function initAdminPanel() {
     }
   });
 
-  // Pulihkan Video Asal Sidang
   $('btn-admin-reset-video').addEventListener('click', async () => {
     if (!isAdmin) return;
     const targetSid = $('admin-target-session').value || 's1';
@@ -537,7 +632,6 @@ function initAdminPanel() {
     }
   });
 
-  // Simpan Tetapan Tayangan Utama & Pengumuman
   $('btn-admin-save-broadcast').addEventListener('click', async () => {
     if (!isAdmin) return;
     livePortalConfig.defaultSession = $('admin-default-session').value || 's1';
@@ -545,7 +639,7 @@ function initAdminPanel() {
     try {
       await saveLiveConfigToCloud();
       loadVideoSession(livePortalConfig.defaultSession, false);
-      showToast('📡 Tetapan tayangan utama & pengumuman telah diaktifkan kepada semua guru!');
+      showToast('📡 Tetapan tayangan utama telah diaktifkan!');
     } catch (err) {
       showToast(`⚠️ ${err.message}`);
     }
@@ -553,7 +647,7 @@ function initAdminPanel() {
 }
 
 /* --------------------------------------------------------------------------
-   3. PEMAIN VIDEO HLS & MP4 TERLINDUNG (TIADA PAUTAN MUAT TURUN)
+   4. PEMAIN VIDEO HLS & MOD SLAID TAYANGAN SKRIN PENUH (FULLSCREEN)
    -------------------------------------------------------------------------- */
 function formatTime(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
@@ -578,21 +672,6 @@ function setLoader(visible, text) {
   const txt = $('loader-text');
   if (txt && text) txt.textContent = text;
   if (loader) loader.hidden = !visible;
-}
-
-function setAturcaraTab(tabId) {
-  activeAturcaraTab = tabId || 's1';
-  document.querySelectorAll('.aturcara-tab-btn').forEach((btn) => {
-    const isMatch = btn.dataset.aturcaraTab === activeAturcaraTab;
-    btn.classList.toggle('active', isMatch);
-    btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
-  });
-  document.querySelectorAll('[data-aturcara-panel]').forEach((panel) => {
-    const pid = panel.dataset.aturcaraPanel;
-    const visible = activeAturcaraTab === 'all' || pid === activeAturcaraTab;
-    panel.hidden = !visible;
-    panel.classList.toggle('active', visible);
-  });
 }
 
 function isCinemaFullscreen() {
@@ -702,44 +781,6 @@ function toggleCinemaFullscreen() {
   }
 }
 
-function initAturcaraSection() {
-  document.querySelectorAll('.aturcara-tab-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const tab = btn.dataset.aturcaraTab || 's1';
-      setAturcaraTab(tab);
-      if (tab !== 'all' && tab !== currentSessionId) {
-        userHasSwitchedSession = true;
-        loadVideoSession(tab, false);
-      }
-    });
-  });
-
-  document.querySelectorAll('[data-play-session]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const sid = btn.dataset.playSession || 's1';
-      userHasSwitchedSession = true;
-      $('panggung').scrollIntoView({ behavior: 'smooth' });
-      loadVideoSession(sid, true);
-    });
-  });
-
-  document.querySelectorAll('[data-fullscreen-session]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const sid = btn.dataset.fullscreenSession || 's1';
-      userHasSwitchedSession = true;
-      if (sid !== currentSessionId) {
-        loadVideoSession(sid, true);
-      } else {
-        const video = $('protected-video');
-        if (video && video.paused) {
-          video.play().catch(() => {});
-        }
-      }
-      enterCinemaFullscreen();
-    });
-  });
-}
-
 function loadVideoSession(sessionId, autoPlay = false, seekToSeconds = null) {
   const session = SESSIONS[sessionId] || SESSIONS.s1;
   currentSessionId = session.id;
@@ -750,13 +791,10 @@ function loadVideoSession(sessionId, autoPlay = false, seekToSeconds = null) {
     btn.setAttribute('aria-selected', active ? 'true' : 'false');
   });
 
-  if (activeAturcaraTab !== 'all') {
-    setAturcaraTab(session.id);
-  }
+  setAturcaraTab(session.id);
 
-  $('now-playing-badge').textContent = session.badge;
-  $('now-playing-title').textContent = session.title;
-  $('comment-session-select').value = session.id;
+  if ($('now-playing-badge')) $('now-playing-badge').textContent = session.badge;
+  if ($('now-playing-title')) $('now-playing-title').textContent = session.title;
   if (isAdmin && $('admin-target-session')) {
     populateAdminFormForSession(session.id);
   }
@@ -767,7 +805,6 @@ function loadVideoSession(sessionId, autoPlay = false, seekToSeconds = null) {
   stage.classList.remove('playing');
   video.poster = session.poster;
   $('time-readout').textContent = `00:00 / ${session.durationLabel}`;
-  $('live-btn-time').textContent = '00:00';
   $('seek-slider').value = '0';
 
   if (hlsInstance) {
@@ -823,7 +860,6 @@ function loadVideoSession(sessionId, autoPlay = false, seekToSeconds = null) {
       showToast('⚠️ Pelayar anda tidak menyokong strim HLS.');
     }
   } else {
-    // Jika Admin memuat naik fail .mp4 baharu, bungkus dalam Blob URL supaya tiada pautan fail terus pada elemen <video>
     fetch(sourceUrl)
       .then((r) => {
         if (!r.ok) throw new Error('Direct stream fallback');
@@ -922,7 +958,6 @@ function initVideoPlayer() {
     const curFormatted = formatTime(cur);
     const durFormatted = formatTime(dur);
     $('time-readout').textContent = `${curFormatted} / ${durFormatted}`;
-    $('live-btn-time').textContent = curFormatted;
     if (!isSeeking && dur > 0) {
       seekSlider.value = String(Math.round((cur / dur) * 1000));
     }
@@ -978,24 +1013,6 @@ function initVideoPlayer() {
     $('btn-topbar-fullscreen').addEventListener('click', toggleCinemaFullscreen);
   }
 
-  $('btn-comment-timestamp').addEventListener('click', () => {
-    if (isCinemaFullscreen()) {
-      exitCinemaFullscreen();
-    }
-    video.pause();
-    const curFormatted = formatTime(video.currentTime || 0);
-    $('comment-session-select').value = currentSessionId;
-    $('comment-timestamp-input').value = curFormatted;
-    $('ruang-komen').scrollIntoView({ behavior: 'smooth' });
-    setTimeout(() => {
-      if (!teacherProfile || !teacherProfile.name) {
-        highlightTeacherNameGate();
-      } else {
-        $('comment-text-input').focus();
-      }
-    }, 450);
-  });
-
   document.querySelectorAll('.session-card').forEach((card) => {
     card.addEventListener('click', () => {
       const targetId = card.dataset.session;
@@ -1007,542 +1024,7 @@ function initVideoPlayer() {
   });
 
   loadVideoSession(livePortalConfig.defaultSession || 's1', false);
-}
-
-/* --------------------------------------------------------------------------
-   4. PENGESAHAN NAMA GURU WAJIB SEBELUM KOMEN
-   -------------------------------------------------------------------------- */
-function getInitials(name) {
-  const parts = String(name || '')
-    .replace(/^(CIKGU|USTAZ|USTAZAH|PUAN|ENCIK|TUAN|PN|EN)\s+/i, '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-  if (!parts.length) return 'CG';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[1][0]).toUpperCase();
-}
-
-function normalizeTeacherName(raw) {
-  return String(raw || '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .toLocaleUpperCase('ms-MY');
-}
-
-function highlightTeacherNameGate() {
-  const gateBox = $('teacher-gate-box');
-  gateBox.classList.remove('shake');
-  void gateBox.offsetWidth;
-  gateBox.classList.add('shake');
-  showToast('⚠️ Sila tulis & sahkan NAMA PENUH anda terlebih dahulu di Langkah 1 supaya senang dikesan siapa yang komen.');
-  $('teacher-name-input').focus();
-}
-
-function applyTeacherProfileUI() {
-  const gateBox = $('teacher-gate-box');
-  const unverifiedView = $('gate-unverified-view');
-  const verifiedView = $('gate-verified-view');
-  const textarea = $('comment-text-input');
-
-  if (teacherProfile && teacherProfile.name) {
-    gateBox.classList.add('verified');
-    unverifiedView.hidden = true;
-    verifiedView.hidden = false;
-    $('verified-name-display').textContent = teacherProfile.name;
-    $('verified-role-display').textContent = `(${teacherProfile.role || 'Guru'})`;
-    $('verified-avatar').textContent = getInitials(teacherProfile.name);
-    textarea.placeholder = `Tulis komen atau semakan anda sebagai ${teacherProfile.name} (nyatakan nama murid / kelas / slaid jika berkaitan)...`;
-  } else {
-    gateBox.classList.remove('verified');
-    unverifiedView.hidden = false;
-    verifiedView.hidden = true;
-    textarea.placeholder = '⚠️ Sila tulis & sahkan NAMA PENUH anda di Langkah 1 di atas terlebih dahulu sebelum menulis komen...';
-  }
-  updateSecurityWatermark();
-}
-
-function saveTeacherProfile(name, role) {
-  const cleanName = normalizeTeacherName(name);
-  const letterCount = (cleanName.match(/[A-Z]/g) || []).length;
-  if (letterCount < 3) {
-    highlightTeacherNameGate();
-    return false;
-  }
-  teacherProfile = {
-    name: cleanName,
-    role: String(role || 'Guru Kelas').trim()
-  };
-  try {
-    localStorage.setItem(STORAGE_KEYS.TEACHER_PROFILE, JSON.stringify(teacherProfile));
-  } catch (_) {}
-  applyTeacherProfileUI();
-  showToast(`✓ Nama disahkan: ${teacherProfile.name}. Anda kini boleh menghantar komen.`);
-  return true;
-}
-
-function initTeacherGate() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEYS.TEACHER_PROFILE);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed && parsed.name && parsed.name.length >= 3) {
-        teacherProfile = parsed;
-        $('teacher-name-input').value = parsed.name;
-        $('teacher-role-input').value = parsed.role || 'Guru Kelas';
-      }
-    }
-  } catch (_) {}
-
-  applyTeacherProfileUI();
-
-  $('teacher-gate-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const ok = saveTeacherProfile(
-      $('teacher-name-input').value,
-      $('teacher-role-input').value
-    );
-    if (ok) {
-      $('comment-text-input').focus();
-    }
-  });
-
-  $('btn-change-name').addEventListener('click', () => {
-    const currentName = teacherProfile ? teacherProfile.name : '';
-    const currentRole = teacherProfile ? teacherProfile.role : 'Guru Kelas';
-    teacherProfile = null;
-    applyTeacherProfileUI();
-    $('teacher-name-input').value = currentName;
-    $('teacher-role-input').value = currentRole;
-    $('teacher-name-input').focus();
-  });
-
-  $('comment-text-input').addEventListener('focus', () => {
-    if (!teacherProfile || !teacherProfile.name) {
-      const typedName = normalizeTeacherName($('teacher-name-input').value);
-      if ((typedName.match(/[A-Z]/g) || []).length >= 3) {
-        saveTeacherProfile(typedName, $('teacher-role-input').value);
-      } else {
-        highlightTeacherNameGate();
-      }
-    }
-  });
-}
-
-/* --------------------------------------------------------------------------
-   5. SISTEM KOMEN & PENYEGERAKAN LANGSUNG (CLOUD SYNC + MODERASI ADMIN)
-   -------------------------------------------------------------------------- */
-function mergeComments(listA, listB) {
-  const deletedMap = (livePortalConfig && livePortalConfig.deletedComments) || {};
-  const map = new Map();
-  for (const item of [...(listA || []), ...(listB || [])]) {
-    if (item && item.id && item.teacherName && item.text && !deletedMap[item.id]) {
-      const existing = map.get(item.id);
-      map.set(item.id, existing ? { ...existing, ...item } : item);
-    }
-  }
-  return Array.from(map.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-}
-
-function loadLocalComments() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEYS.COMMENTS_CACHE);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (_) {
-    return [];
-  }
-}
-
-function saveLocalComments(list) {
-  try {
-    localStorage.setItem(STORAGE_KEYS.COMMENTS_CACHE, JSON.stringify(list));
-  } catch (_) {}
-}
-
-async function syncCommentsFromCloud(newCommentToPush = null) {
-  if (syncInProgress && !newCommentToPush) return;
-  syncInProgress = true;
-  const indicator = $('sync-indicator');
-  try {
-    await fetchLiveConfigFromCloud(false);
-
-    if (newCommentToPush) {
-      await fetch(CLOUD_SYNC_CONFIG.issuesCommentsUrl, {
-        method: 'POST',
-        headers: {
-          ...getCloudHeader(),
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          body: JSON.stringify(newCommentToPush)
-        })
-      });
-    }
-
-    const res = await fetch(`${CLOUD_SYNC_CONFIG.issuesCommentsUrl}?per_page=100&_=${Date.now()}`, {
-      method: 'GET',
-      headers: getCloudHeader(),
-      cache: 'no-store'
-    });
-    if (res.ok) {
-      const items = await res.json();
-      const cloudComments = [];
-      if (Array.isArray(items)) {
-        for (const item of items) {
-          try {
-            const parsed = JSON.parse(item.body || '');
-            if (parsed && parsed.id && parsed.teacherName && parsed.text) {
-              parsed.ghCommentId = item.id;
-              cloudComments.push(parsed);
-            }
-          } catch (_) {}
-        }
-      }
-      const localComments = loadLocalComments();
-      commentsList = mergeComments(cloudComments, localComments);
-      saveLocalComments(commentsList);
-
-      if (indicator) {
-        const timeStr = new Intl.DateTimeFormat('ms-MY', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        }).format(new Date());
-        indicator.textContent = `🟢 Disambung secara langsung · Kemas kini: ${timeStr}`;
-      }
-    }
-  } catch (_) {
-    if (indicator) {
-      indicator.textContent = '🟡 Mod simpanan langsung aktif';
-    }
-  } finally {
-    syncInProgress = false;
-    renderCommentsSection();
-  }
-}
-
-function formatDateTimeMY(timestamp) {
-  try {
-    return new Intl.DateTimeFormat('ms-MY', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-      timeZone: 'Asia/Kuching'
-    }).format(new Date(timestamp));
-  } catch (_) {
-    return new Date(timestamp).toLocaleString('ms-MY');
-  }
-}
-
-function renderTeacherDetectorChips() {
-  const container = $('teacher-chips-container');
-  const countsByTeacher = new Map();
-  for (const c of commentsList) {
-    const name = c.teacherName || 'GURU';
-    countsByTeacher.set(name, (countsByTeacher.get(name) || 0) + 1);
-  }
-
-  $('stat-total-comments').textContent = String(commentsList.length);
-  $('stat-total-teachers').textContent = String(countsByTeacher.size);
-
-  if (countsByTeacher.size === 0) {
-    container.innerHTML = '<span style="font-size:0.82rem;color:var(--muted);">Belum ada guru yang menghantar komen.</span>';
-    return;
-  }
-
-  const allChipActive = activeTeacherFilter === '' ? 'active' : '';
-  let html = `<button type="button" class="teacher-chip ${allChipActive}" data-teacher="">Semua Guru <span class="count">${commentsList.length}</span></button>`;
-
-  for (const [name, count] of countsByTeacher.entries()) {
-    const isActive = activeTeacherFilter === name ? 'active' : '';
-    html += `
-      <button type="button" class="teacher-chip ${isActive}" data-teacher="${esc(name)}">
-        👤 ${esc(name)} <span class="count">${count}</span>
-      </button>
-    `;
-  }
-
-  container.innerHTML = html;
-
-  container.querySelectorAll('.teacher-chip').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      activeTeacherFilter = btn.dataset.teacher || '';
-      renderCommentsSection();
-    });
-  });
-}
-
-function getFilteredComments() {
-  const deletedMap = (livePortalConfig && livePortalConfig.deletedComments) || {};
-  const q = ($('comment-search-input').value || '').trim().toLocaleUpperCase('ms-MY');
-  return commentsList.filter((c) => {
-    if (deletedMap[c.id]) return false;
-    if (activeSessionFilter !== 'all' && c.sessionId !== activeSessionFilter) return false;
-    if (activeTeacherFilter && c.teacherName !== activeTeacherFilter) return false;
-    if (q) {
-      const hay = `${c.teacherName} ${c.teacherRole} ${c.category} ${c.text} ${c.videoTimestamp || ''}`.toLocaleUpperCase('ms-MY');
-      if (!hay.includes(q)) return false;
-    }
-    return true;
-  });
-}
-
-function renderCommentsSection() {
-  renderTeacherDetectorChips();
-  const feed = $('comments-feed');
-  const filtered = getFilteredComments();
-  const resolvedMap = (livePortalConfig && livePortalConfig.resolvedComments) || {};
-
-  if (!filtered.length) {
-    feed.innerHTML = `
-      <div class="empty-comments">
-        <strong>Tiada komen ditemui untuk paparan ini.</strong>
-        <p style="margin:6px 0 0;font-size:0.86rem;">Sila sahkan nama penuh anda di Langkah 1 di atas dan hantar maklum balas slaid di ruangan komen.</p>
-      </div>
-    `;
-    return;
-  }
-
-  feed.innerHTML = filtered.map((c) => {
-    const sess = SESSIONS[c.sessionId] || SESSIONS.s1;
-    const hasTime = c.videoTimestamp && parseTimestampToSeconds(c.videoTimestamp) !== null;
-    const isResolved = !!resolvedMap[c.id];
-    return `
-      <article class="comment-card">
-        <div class="teacher-avatar" title="${esc(c.teacherName)}">${esc(getInitials(c.teacherName))}</div>
-        <div class="comment-body">
-          <div class="comment-top">
-            <div class="comment-author-wrap">
-              <span class="comment-author">${esc(c.teacherName)}</span>
-              <span class="comment-role-tag">${esc(c.teacherRole || 'Guru')}</span>
-              <span class="comment-category-tag">${esc(c.category || 'Semakan')}</span>
-              ${isResolved ? '<span class="comment-resolved-badge">✓ Telah Dikemas Kini oleh Admin</span>' : ''}
-            </div>
-            <span class="comment-time-meta">${esc(formatDateTimeMY(c.createdAt))}</span>
-          </div>
-          <div class="comment-badges-row">
-            <span class="comment-sidang-badge">${esc(sess.shortName)}</span>
-            ${hasTime ? `
-              <button type="button" class="comment-jump-btn" data-jump-session="${esc(c.sessionId)}" data-jump-time="${esc(c.videoTimestamp)}" title="Klik untuk lompat ke minit ${esc(c.videoTimestamp)} dalam video">
-                ▶ Lihat Minit ${esc(c.videoTimestamp)}
-              </button>
-            ` : ''}
-            ${isAdmin ? `
-              <div class="comment-admin-actions">
-                <button type="button" class="btn-admin-comment" data-resolve-id="${esc(c.id)}">
-                  ${isResolved ? '↩ Batal Tanda Selesai' : '✅ Tanda Selesai Dibaiki'}
-                </button>
-                <button type="button" class="btn-admin-comment danger" data-delete-id="${esc(c.id)}" data-gh-id="${esc(c.ghCommentId || '')}">
-                  🗑️ Padam
-                </button>
-              </div>
-            ` : ''}
-          </div>
-          <p class="comment-text">${esc(c.text)}</p>
-        </div>
-      </article>
-    `;
-  }).join('');
-
-  feed.querySelectorAll('.comment-jump-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const targetSession = btn.dataset.jumpSession || 's1';
-      const targetTimeStr = btn.dataset.jumpTime || '00:00';
-      const targetSeconds = parseTimestampToSeconds(targetTimeStr) || 0;
-      $('panggung').scrollIntoView({ behavior: 'smooth' });
-      userHasSwitchedSession = true;
-      if (targetSession !== currentSessionId) {
-        loadVideoSession(targetSession, true, targetSeconds);
-      } else {
-        const video = $('protected-video');
-        video.currentTime = targetSeconds;
-        video.play().catch(() => {});
-      }
-      showToast(`⏱ Melompat ke ${SESSIONS[targetSession].shortName} — Minit ${targetTimeStr}`);
-    });
-  });
-
-  // Butang Moderasi Admin: Tanda Selesai
-  feed.querySelectorAll('[data-resolve-id]').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      if (!isAdmin) return;
-      const cid = btn.dataset.resolveId;
-      livePortalConfig.resolvedComments = livePortalConfig.resolvedComments || {};
-      if (livePortalConfig.resolvedComments[cid]) {
-        delete livePortalConfig.resolvedComments[cid];
-      } else {
-        livePortalConfig.resolvedComments[cid] = true;
-      }
-      renderCommentsSection();
-      try {
-        await saveLiveConfigToCloud();
-        showToast('✓ Status semakan komen telah dikemas kini.');
-      } catch (_) {}
-    });
-  });
-
-  // Butang Moderasi Admin: Padam Komen
-  feed.querySelectorAll('[data-delete-id]').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      if (!isAdmin) return;
-      const cid = btn.dataset.deleteId;
-      const ghId = btn.dataset.ghId;
-      livePortalConfig.deletedComments = livePortalConfig.deletedComments || {};
-      livePortalConfig.deletedComments[cid] = true;
-      commentsList = commentsList.filter((item) => item.id !== cid);
-      saveLocalComments(commentsList);
-      renderCommentsSection();
-      try {
-        if (ghId) {
-          await fetch(`${CLOUD_SYNC_CONFIG.repoApiBase}/issues/comments/${ghId}`, {
-            method: 'DELETE',
-            headers: getCloudHeader()
-          });
-        }
-        await saveLiveConfigToCloud();
-        showToast('🗑️ Komen telah dipadam oleh Admin.');
-      } catch (_) {}
-    });
-  });
-}
-
-function initCommentSystem() {
-  commentsList = loadLocalComments();
-  renderCommentsSection();
-
-  $('btn-grab-current-time').addEventListener('click', () => {
-    const video = $('protected-video');
-    $('comment-timestamp-input').value = formatTime(video.currentTime || 0);
-    $('comment-session-select').value = currentSessionId;
-    showToast(`⏱ Cap masa ${$('comment-timestamp-input').value} dimasukkan ke borang komen.`);
-  });
-
-  $('comment-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    if (!teacherProfile || !teacherProfile.name) {
-      const typedName = normalizeTeacherName($('teacher-name-input').value);
-      if ((typedName.match(/[A-Z]/g) || []).length >= 3) {
-        const ok = saveTeacherProfile(typedName, $('teacher-role-input').value);
-        if (!ok) return;
-      } else {
-        highlightTeacherNameGate();
-        return;
-      }
-    }
-
-    const text = ($('comment-text-input').value || '').trim();
-    if (!text) {
-      $('comment-text-input').focus();
-      return;
-    }
-
-    const sessionId = $('comment-session-select').value || currentSessionId;
-    const category = $('comment-category-select').value || 'Semakan Slaid / Ejaan Nama';
-    const rawTime = ($('comment-timestamp-input').value || '').trim();
-    const videoTimestamp = rawTime || formatTime($('protected-video').currentTime || 0);
-
-    const newComment = {
-      id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
-      teacherName: teacherProfile.name,
-      teacherRole: teacherProfile.role || 'Guru',
-      sessionId,
-      category,
-      videoTimestamp,
-      text,
-      createdAt: Date.now()
-    };
-
-    commentsList = mergeComments([newComment], commentsList);
-    saveLocalComments(commentsList);
-    $('comment-text-input').value = '';
-    $('comment-timestamp-input').value = '';
-    renderCommentsSection();
-    showToast(`✓ Terima kasih ${teacherProfile.name}! Komen anda telah direkodkan.`);
-
-    await syncCommentsFromCloud(newComment);
-  });
-
-  document.querySelectorAll('[data-filter-session]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      activeSessionFilter = btn.dataset.filterSession || 'all';
-      document.querySelectorAll('[data-filter-session]').forEach((b) => {
-        b.classList.toggle('active', b === btn);
-      });
-      renderCommentsSection();
-    });
-  });
-
-  $('comment-search-input').addEventListener('input', () => {
-    renderCommentsSection();
-  });
-
-  $('btn-refresh-comments').addEventListener('click', () => {
-    showToast('🔄 Menyemak komen & konfigurasi terkini...');
-    syncCommentsFromCloud();
-  });
-
-  $('btn-copy-whatsapp').addEventListener('click', async () => {
-    const filtered = getFilteredComments();
-    if (!filtered.length) {
-      showToast('Tiada komen untuk disalin.');
-      return;
-    }
-    const lines = [
-      '*SENARAI KOMEN & SEMAKAN GURU — MAK 2026 SK RANGGU*',
-      `Jumlah Komen: ${filtered.length}`,
-      '----------------------------------------'
-    ];
-    filtered.forEach((c, idx) => {
-      const sess = SESSIONS[c.sessionId] || SESSIONS.s1;
-      lines.push(
-        `${idx + 1}. *${c.teacherName}* (${c.teacherRole})`,
-        `   🎬 ${sess.shortName} ${c.videoTimestamp ? `[Minit ${c.videoTimestamp}]` : ''} · _${c.category}_`,
-        `   💬 ${c.text}`,
-        ''
-      );
-    });
-    try {
-      await navigator.clipboard.writeText(lines.join('\n'));
-      showToast('📋 Ringkasan komen berjaya disalin! Sedia ditampal ke WhatsApp.');
-    } catch (_) {
-      showToast('Tidak dapat menyalin secara automatik. Sila guna butang Muat Turun CSV.');
-    }
-  });
-
-  $('btn-export-csv').addEventListener('click', () => {
-    const filtered = getFilteredComments();
-    if (!filtered.length) {
-      showToast('Tiada komen untuk dimuat turun.');
-      return;
-    }
-    const quote = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
-    const rows = [
-      ['Bil', 'Nama Penuh Guru', 'Peranan / Unit', 'Sidang Video', 'Cap Masa Video', 'Kategori Maklum Balas', 'Isi Komen Guru', 'Tarikh & Masa'],
-      ...filtered.map((c, idx) => [
-        idx + 1,
-        c.teacherName,
-        c.teacherRole,
-        (SESSIONS[c.sessionId] || SESSIONS.s1).shortName,
-        c.videoTimestamp || '-',
-        c.category,
-        c.text,
-        formatDateTimeMY(c.createdAt)
-      ])
-    ];
-    const csvContent = rows.map((r) => r.map(quote).join(',')).join('\r\n');
-    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'Rekod-Komen-Guru-MAK-2026-SK-Ranggu.csv';
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
-    showToast('📊 Fail CSV rekod komen guru telah dimuat turun.');
-  });
-
-  fetchLiveConfigFromCloud(true).then(() => syncCommentsFromCloud());
-  setInterval(() => syncCommentsFromCloud(), 15000);
+  fetchLiveConfigFromCloud(true);
 }
 
 /* --------------------------------------------------------------------------
@@ -1551,8 +1033,6 @@ function initCommentSystem() {
 document.addEventListener('DOMContentLoaded', () => {
   initSecurityProtections();
   initAdminPanel();
-  initTeacherGate();
-  initAturcaraSection();
+  initPageNavigation();
   initVideoPlayer();
-  initCommentSystem();
 });
