@@ -429,11 +429,70 @@ function fileToBase64(file, onProgress) {
   });
 }
 
+async function uploadViaLocalBridge(file, sessionId, onProgress) {
+  const bridgeBase = 'http://127.0.0.1:18765';
+  const pingRes = await fetch(`${bridgeBase}/ping`, { method: 'GET', cache: 'no-store' });
+  if (!pingRes.ok) throw new Error('Bridge tempatan tidak aktif.');
+
+  if (onProgress) onProgress(5, 'Menghubungi enjin FFmpeg tempatan di Mac anda...');
+  const localRes = await fetch(`${bridgeBase}/process-local`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      sessionId,
+      fileName: file.name,
+      fileSize: file.size
+    })
+  });
+  const localData = await localRes.json();
+
+  if (!localData.ok && localData.needStream) {
+    if (onProgress) onProgress(8, `Menghantar fail ${(file.size / (1024 * 1024)).toFixed(0)} MB ke enjin FFmpeg tempatan...`);
+    const streamRes = await fetch(`${bridgeBase}/upload-stream`, {
+      method: 'POST',
+      headers: {
+        'X-Session-Id': sessionId,
+        'X-File-Name': encodeURIComponent(file.name),
+        'Content-Type': 'application/octet-stream'
+      },
+      body: file
+    });
+    if (!streamRes.ok) throw new Error('Gagal menghantar strim fail ke enjin FFmpeg.');
+  } else if (!localData.ok) {
+    throw new Error(localData.error || 'Enjin FFmpeg tempatan sedang sibuk.');
+  }
+
+  // Pantau status enkoding HLS & muat naik GitHub
+  while (true) {
+    await new Promise((r) => setTimeout(r, 1200));
+    const stRes = await fetch(`${bridgeBase}/status`, { method: 'GET', cache: 'no-store' });
+    if (!stRes.ok) continue;
+    const st = await stRes.json();
+    if (onProgress) onProgress(st.percent || 10, st.status || 'Memproses video...');
+    if (st.durationLabel && $('admin-session-duration')) {
+      $('admin-session-duration').value = st.durationLabel;
+    }
+    if (st.done) {
+      if (st.error) throw new Error(st.error);
+      return st.playlistUrl || `streams/${sessionId}/index.m3u8?v=${Date.now()}`;
+    }
+  }
+}
+
 async function uploadVideoFileToGitHub(file, sessionId, onProgress) {
+  // Cuba gunakan Enjin FFmpeg Jambatan Tempatan (127.0.0.1:18765) terlebih dahulu (menyokong fail besar 1GB - 5GB+)
+  try {
+    return await uploadViaLocalBridge(file, sessionId, onProgress);
+  } catch (bridgeErr) {
+    if (bridgeErr && bridgeErr.message && !/Bridge tempatan|Failed to fetch|NetworkError/i.test(bridgeErr.message)) {
+      throw bridgeErr;
+    }
+  }
+
   const maxBytes = 95 * 1024 * 1024;
   if (file.size > maxBytes) {
     throw new Error(
-      `Saiz fail ini ialah ${(file.size / (1024 * 1024)).toFixed(1)} MB (melebihi had 95 MB pelayar). Sila dwi-klik aplikasi "Tukar-Video-Admin-MAK2026.command" di Desktop Mac anda.`
+      `Saiz fail ini ialah ${(file.size / (1024 * 1024)).toFixed(1)} MB (melebihi had 100 MB satu fail GitHub). Sila pastikan Enjin FFmpeg Mac aktif atau dwi-klik "Tukar-Video-Admin-MAK2026.command" di Desktop untuk memotong fail ini kepada segmen strim HLS.`
     );
   }
   if (onProgress) onProgress(10, 'Membaca fail video...');
@@ -457,7 +516,7 @@ async function uploadVideoFileToGitHub(file, sessionId, onProgress) {
   });
 
   if (!res.ok) {
-    throw new Error('Muat naik ke GitHub gagal. Jika fail terlalu besar, sila guna Tukar-Video-Admin-MAK2026.command di Desktop.');
+    throw new Error('Muat naik ke GitHub gagal.');
   }
   if (onProgress) onProgress(100, 'Muat naik selesai!');
   return `${CLOUD_SYNC_CONFIG.rawBaseUrl}/${fileName}`;
