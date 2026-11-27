@@ -35,18 +35,18 @@ const DEFAULT_SESSIONS = {
     badge: 'SIDANG 3 · SABTU PAGI',
     cardTitle: 'Hari Kedua (Sabtu Pagi)',
     shortName: 'Sidang 3 (Sabtu Pagi)',
-    subtitle: '28 Nov 2026 · 6.40 Pagi – 11.30 Pagi (36:48)',
+    subtitle: '28 Nov 2026 · 6.40 Pagi – 11.30 Pagi (37:52)',
     title: 'MAK 2026 — 3 Sabtu Pagi — Fail Utama (28 Nov 2026 · 6.40 Pagi – 11.30 Pagi)',
-    playlist: 'streams/s3/index.m3u8?v=20261125pm',
-    poster: 'posters/s3.jpg?v=20261125pm',
-    durationLabel: '36:48'
+    playlist: 'streams/s3/index.m3u8?v=20261128',
+    poster: 'posters/s3.jpg?v=20261128',
+    durationLabel: '37:52'
   }
 };
 
 let SESSIONS = JSON.parse(JSON.stringify(DEFAULT_SESSIONS));
 
 const STORAGE_KEYS = {
-  LIVE_CONFIG_CACHE: 'mak2026_live_config_v1',
+  LIVE_CONFIG_CACHE: 'mak2026_live_config_v2',
   ADMIN_SESSION: 'mak2026_admin_auth_v1'
 };
 
@@ -65,19 +65,19 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
 }[c]));
 
 let currentPage = 'tayangan';
-let currentSessionId = 's1';
+let currentSessionId = 's3';
 let userHasSwitchedSession = false;
 let hlsInstance = null;
 let currentBlobUrl = null;
 let isSeeking = false;
-let activeAturcaraTab = 's1';
+let activeAturcaraTab = 's3';
 let fsIdleTimer = null;
 let toastTimer = null;
 let isAdmin = false;
 let adminMethod = 'upload';
 
 let livePortalConfig = {
-  defaultSession: 's1',
+  defaultSession: 's3',
   announcement: '',
   sessions: {}
 };
