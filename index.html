@@ -5,678 +5,83 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
   <meta name="robots" content="noindex,nofollow">
   <link rel="icon" type="image/png" href="logo-sekolah.png">
-  <meta name="theme-color" content="#0d1946">
-  <title>MAK 2026 · Tayangan Slaid &amp; Aturcara Majlis (SK Ranggu)</title>
-  <meta name="description" content="Portal Tayangan Video Slaid &amp; Aturcara Rasmi Majlis Apresiasi Kecemerlangan (MAK) 2026 SK Ranggu.">
+  <meta name="theme-color" content="#070f2e">
+  <title>MAK 2026 · Paparan Ditutup — Tahniah Semua! (SK Ranggu)</title>
+  <meta name="description" content="Paparan Tayangan Majlis Apresiasi Kecemerlangan (MAK) 2026 SK Ranggu telah ditutup. Kita jumpa di lain hari. Tahniah semua!">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ms_MY">
   <meta property="og:site_name" content="MAK 2026 · SK Ranggu">
-  <meta property="og:title" content="MAK 2026 · Tayangan Slaid &amp; Aturcara Majlis (SK Ranggu)">
-  <meta property="og:description" content="Portal Tayangan Video Slaid &amp; Aturcara Rasmi 3 Sidang MAK 2026 SK Ranggu (Jumaat Pagi, Jumaat Petang &amp; Sabtu Pagi).">
+  <meta property="og:title" content="MAK 2026 · Paparan Ditutup — Kita Jumpa Di Lain Hari. Tahniah Semua!">
+  <meta property="og:description" content="Majlis Apresiasi Kecemerlangan (MAK) 2026 SK Ranggu telah melabuhkan tirai. Tahniah kepada semua penerima anugerah, murid, guru dan ibu bapa!">
   <meta property="og:image" content="logo-majlis.png">
-  <link rel="stylesheet" href="style.css?v=20261124pm">
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
+  <link rel="stylesheet" href="style.css?v=20261128tutup">
 </head>
-<body oncontextmenu="return false;">
+<body class="closed-portal-body" oncontextmenu="return false;">
 
-  <!-- HEADER RASMI KOMPAK DENGAN TAB HALAMAN BERASINGAN -->
   <header class="app-header">
     <div class="brand-wrap">
       <img class="school-logo" src="logo-sekolah.png" alt="Logo Sekolah Kebangsaan Ranggu">
-      <img class="majlis-logo-sm" src="logo-majlis.png" alt="Logo MAK 2026">
       <div class="brand-text">
-        <strong>MAJLIS APRESIASI KECEMERLANGAN 2026</strong>
-        <small>SEKOLAH KEBANGSAAN RANGGU · XBA3037 · TAWAU, SABAH</small>
+        <strong>SEKOLAH KEBANGSAAN RANGGU</strong>
+        <small>XBA3037 · TAWAU, SABAH · MAJLIS APRESIASI KECEMERLANGAN 2026</small>
       </div>
     </div>
-
-    <nav class="page-nav" aria-label="Navigasi Halaman Utama">
-      <button type="button" class="page-nav-btn active" data-page-target="tayangan" id="nav-btn-tayangan">
-        🎬 Tayangan Video
-      </button>
-      <button type="button" class="page-nav-btn" data-page-target="aturcara" id="nav-btn-aturcara">
-        📋 Aturcara Majlis
-      </button>
-      <button type="button" class="btn-admin-icon" id="btn-toggle-admin" aria-label="Akses">
-        🔒
-      </button>
-    </nav>
+    <div class="closed-header-pill">
+      <span class="closed-dot"></span> TAYANGAN DITUTUP
+    </div>
   </header>
 
-  <main>
-    <!-- PANEL KAWALAN (IKON SAHAJA) -->
-    <section id="admin-panel" class="admin-panel" hidden>
-      <div id="admin-login-view" class="admin-login-compact">
-        <form id="admin-login-form" class="admin-login-inline">
-          <span class="lock-icon-label">🔑</span>
-          <input
-            type="password"
-            id="admin-pin-input"
-            class="field-input"
-            placeholder="••••••••"
-            required
-            autocomplete="off"
-          >
-          <button type="submit" class="btn-gold-icon" title="Masuk">🔓</button>
-          <button type="button" class="btn-close-admin" id="btn-close-admin-login" title="Tutup">✕</button>
-        </form>
+  <main class="closed-main">
+    <section class="closed-hero-card" aria-label="Notis Penutupan Paparan Tayangan MAK 2026">
+      <div class="closed-logos-row">
+        <img class="closed-school-emblem" src="logo-sekolah.png" alt="Lencana SK Ranggu">
+        <img class="closed-majlis-emblem" src="logo-majlis.png" alt="Logo Majlis Apresiasi Kecemerlangan 2026">
       </div>
 
-      <div id="admin-dashboard-view" class="admin-dashboard-card" hidden>
-        <div class="admin-dash-header">
-          <div>
-            <span class="admin-eyebrow">🛠️ MOD PENTADBIR AKTIF · MOHAMMAD FIKREY BIN ABDUL GAPAR</span>
-            <h2>Pusat Kawalan &amp; Penukaran Video Tayangan MAK 2026</h2>
-            <p>Semua perubahan yang anda simpan di sini akan <strong>dikemas kini secara langsung (live)</strong>.</p>
-          </div>
-          <div class="admin-dash-actions">
-            <button type="button" class="btn-outline-sm" id="btn-admin-logout">🚪 Log Keluar</button>
-            <button type="button" class="btn-close-admin" id="btn-close-admin-dash" title="Sembunyikan">✕</button>
-          </div>
-        </div>
+      <span class="closed-status-badge">
+        🔒 SIARAN &amp; TAYANGAN RASMI TELAH MELABUHKAN TIRAI
+      </span>
 
-        <div class="admin-grid">
-          <div class="admin-box">
-            <h3>🎬 1. Pilih Sidang &amp; Tukar Video</h3>
-            <form id="admin-video-form" class="admin-form">
-              <label class="field-label">
-                Pilih Sidang Yang Mahu Ditukar Videonya *
-                <select id="admin-target-session" class="field-select">
-                  <option value="s1">Sidang 1 — Jumaat Pagi (Hari Pertama Pagi)</option>
-                  <option value="s2">Sidang 2 — Jumaat Petang (Hari Pertama Petang)</option>
-                  <option value="s3">Sidang 3 — Sabtu Pagi (Hari Kedua)</option>
-                </select>
-              </label>
+      <h1 class="closed-title">
+        PAPARAN INI DITUTUP
+      </h1>
 
-              <div class="admin-method-tabs">
-                <button type="button" class="method-tab active" data-method="upload">📤 Muat Naik Fail Video (.mp4)</button>
-                <button type="button" class="method-tab" data-method="url">🔗 Guna Pautan / Strim (.m3u8 / .mp4)</button>
-              </div>
+      <p class="closed-subtitle">
+        KITA JUMPA DI LAIN HARI.<br>
+        <span>🎉 TAHNIAH SEMUA! 🏆</span>
+      </p>
 
-              <div id="admin-method-upload" class="admin-method-pane">
-                <label class="field-label">
-                  Pilih Fail Video Baharu Dari Komputer / Peranti (.mp4)
-                  <input type="file" id="admin-video-file" class="field-input" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.m3u8">
-                </label>
-                <p class="admin-help-text">
-                  💡 <strong>Sokongan Fail Besar (1 GB – 5 GB+):</strong> Kerana GitHub mengehadkan 100 MB bagi setiap satu fail tunggal, fail video besar (seperti <strong>3,371 MB / 3.37 GB</strong>) akan <strong>dipotong secara automatik oleh enjin FFmpeg kepada ~190 keping segmen kecil HLS (~0.8 MB setiap keping)</strong> apabila anda klik <strong>Simpan &amp; Tukar Video Secara Live</strong> di bawah.
-                </p>
-                <div id="admin-upload-progress-wrap" class="upload-progress-wrap" hidden>
-                  <div class="upload-progress-bar"><span id="admin-upload-bar-fill" style="width:0%"></span></div>
-                  <small id="admin-upload-status-text">Memuat naik video ke GitHub momon-ux...</small>
-                </div>
-              </div>
-
-              <div id="admin-method-url" class="admin-method-pane" hidden>
-                <label class="field-label">
-                  URL Strim HLS (.m3u8) atau Pautan Video (.mp4)
-                  <input
-                    type="text"
-                    id="admin-video-url"
-                    class="field-input"
-                    placeholder="Contoh: streams/s1/index.m3u8"
-                  >
-                </label>
-              </div>
-
-              <div class="admin-two-col">
-                <label class="field-label">
-                  Tajuk Paparan Sidang
-                  <input type="text" id="admin-session-title" class="field-input" required>
-                </label>
-                <label class="field-label">
-                  Label Durasi (MM:SS)
-                  <input type="text" id="admin-session-duration" class="field-input" placeholder="Contoh: 48:02" required>
-                </label>
-              </div>
-
-              <label class="field-label">
-                Subtajuk / Tarikh &amp; Masa Sidang (Pada Kad Tab)
-                <input type="text" id="admin-session-subtitle" class="field-input" placeholder="Contoh: 27 Nov 2026 (Jumaat) · 6.30 Pagi – 10.40 Pagi">
-              </label>
-
-              <div class="admin-btn-row">
-                <button type="submit" class="btn-send-comment" id="btn-admin-save-video">
-                  💾 Simpan &amp; Tukar Video Secara Live
-                </button>
-                <button type="button" class="btn-outline-sm" id="btn-admin-reset-video">
-                  🔄 Pulihkan Video Asal
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div class="admin-box">
-            <h3>📡 2. Kawalan Tayangan Utama</h3>
-            <label class="field-label" style="margin-bottom:14px;">
-              Sidang Utama Semasa (Default Live Session)
-              <select id="admin-default-session" class="field-select">
-                <option value="s1">Sidang 1 — Jumaat Pagi (Utama)</option>
-                <option value="s2">Sidang 2 — Jumaat Petang (Utama)</option>
-                <option value="s3">Sidang 3 — Sabtu Pagi (Utama)</option>
-              </select>
-            </label>
-
-            <label class="field-label" style="margin-bottom:14px;">
-              Pengumuman / Nota di Atas Video (Pilihan)
-              <input
-                type="text"
-                id="admin-announcement-input"
-                class="field-input"
-                placeholder="Kosongkan jika tiada pengumuman"
-              >
-            </label>
-
-            <button type="button" class="btn-gold" id="btn-admin-save-broadcast" style="width:100%;">
-              📡 Aktifkan Tetapan Tayangan Utama
-            </button>
-
-            <div class="admin-current-summary" id="admin-current-summary"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- BANNER PENGUMUMAN ADMIN (JIKA ADA) -->
-    <div id="live-announcement-bar" class="live-announcement-bar" hidden></div>
-
-    <!-- ======================================================================
-         HALAMAN 1: TAYANGAN VIDEO SLAID (KOMPAK 1 SKRIN)
-         ====================================================================== -->
-    <section id="page-tayangan" class="page-view active" aria-label="Halaman Tayangan Video Slaid">
-      <!-- PILIHAN 3 SIDANG VIDEO KOMPAK -->
-      <div class="session-grid" role="tablist" aria-label="Pilih Sidang Tayangan">
-        <button type="button" class="session-card" data-session="s1" role="tab" aria-selected="false" id="tab-s1">
-          <img class="session-thumb" src="posters/s1.jpg?v=20261125pm" alt="Sidang 1 Jumaat Pagi">
-          <div class="session-meta">
-            <span class="session-badge">SIDANG 1 · JUMAAT PAGI</span>
-            <strong>Hari Pertama (Pagi)</strong>
-            <small>27 Nov 2026 · 6.30 Pagi – 10.40 Pagi (48:17)</small>
-          </div>
-        </button>
-
-        <button type="button" class="session-card" data-session="s2" role="tab" aria-selected="false" id="tab-s2">
-          <img class="session-thumb" src="posters/s2.jpg?v=20261125pm" alt="Sidang 2 Jumaat Petang">
-          <div class="session-meta">
-            <span class="session-badge">SIDANG 2 · JUMAAT PETANG</span>
-            <strong>Hari Pertama (Petang)</strong>
-            <small>27 Nov 2026 · 12.50 Tgh Hari – 4.40 Ptg (43:24)</small>
-          </div>
-        </button>
-
-        <button type="button" class="session-card active" data-session="s3" role="tab" aria-selected="true" id="tab-s3">
-          <img class="session-thumb" src="posters/s3.jpg?v=20261128" alt="Sidang 3 Sabtu Pagi">
-          <div class="session-meta">
-            <span class="session-badge">SIDANG 3 · SABTU PAGI</span>
-            <strong>Hari Kedua (Sabtu Pagi)</strong>
-            <small>28 Nov 2026 · 6.40 Pagi – 11.30 Pagi (37:52)</small>
-          </div>
-        </button>
+      <div class="closed-divider" aria-hidden="true">
+        <span>✦</span>
+        <span>MAJLIS APRESIASI KECEMERLANGAN 2026</span>
+        <span>✦</span>
       </div>
 
-      <!-- PANGGUNG VIDEO TAYANGAN RASMI -->
-      <div id="panggung" class="cinema-card" aria-label="Pemain Video Tayangan Rasmi">
-        <div class="cinema-topbar">
-          <div class="cinema-now-playing">
-            <span class="sidang-pill" id="now-playing-badge">SIDANG 3 · SABTU PAGI</span>
-            <span id="now-playing-title">MAK 2026 — 3 Sabtu Pagi — Fail Utama (28 Nov 2026 · 6.40 Pagi – 11.30 Pagi)</span>
-          </div>
-          <div class="cinema-topbar-actions">
-            <button type="button" class="btn-topbar-aturcara" id="btn-open-current-aturcara" title="Buka halaman Aturcara untuk sidang ini">
-              📋 Aturcara Sidang Ini
-            </button>
-            <button type="button" class="btn-topbar-fullscreen" id="btn-topbar-fullscreen" title="Buka Mod Slaid Tayangan Skrin Penuh (Kekunci F)">
-              ⛶ Tayang Skrin Penuh
-            </button>
-          </div>
+      <p class="closed-message">
+        Setinggi-tinggi penghargaan dan ucapan <strong>Tahniah</strong> diucapkan kepada semua murid penerima anugerah, graduan Prasekolah &amp; Tahun 6, barisan pentadbir, guru-guru, staf, serta ibu bapa yang telah menjayakan <strong>Majlis Apresiasi Kecemerlangan (MAK) 2026 Sekolah Kebangsaan Ranggu</strong>.
+      </p>
+
+      <div class="closed-sessions-recap">
+        <div class="recap-pill">
+          <strong>✓ Sidang 1 · Jumaat Pagi</strong>
+          <small>27 November 2026 · Selesai</small>
         </div>
-
-        <div class="video-stage" id="video-stage">
-          <video
-            id="protected-video"
-            poster="posters/s3.jpg?v=20261128"
-            playsinline
-            webkit-playsinline
-            preload="metadata"
-            controlsList="nodownload noremoteplayback"
-            disablePictureInPicture
-            disableRemotePlayback
-            oncontextmenu="return false;"
-          ></video>
-
-          <div class="security-watermark" id="security-watermark">
-            TAYANGAN RASMI SK RANGGU · MAK 2026
-          </div>
-
-          <div class="video-shield" id="video-shield" title="Klik untuk Main / Jeda · Dwi-klik untuk Skrin Penuh">
-            <button type="button" class="big-play-btn" id="big-play-btn" aria-label="Mainkan Video">
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M8 5.14v14l11-7-11-7z"/>
-              </svg>
-            </button>
-          </div>
-
-          <div class="stream-loader" id="stream-loader" hidden>
-            <div class="spinner"></div>
-            <span id="loader-text">Memuatkan strim tayangan rasmi...</span>
-          </div>
+        <div class="recap-pill">
+          <strong>✓ Sidang 2 · Jumaat Petang</strong>
+          <small>27 November 2026 · Selesai</small>
         </div>
-
-        <div class="player-controls">
-          <div class="timeline-row">
-            <input
-              type="range"
-              id="seek-slider"
-              class="seek-slider"
-              min="0"
-              max="1000"
-              value="0"
-              step="1"
-              aria-label="Garis masa tayangan video"
-            >
-            <span class="time-readout" id="time-readout">00:00 / 37:52</span>
-          </div>
-
-          <div class="controls-row">
-            <div class="controls-left">
-              <button type="button" class="ctrl-btn primary-play" id="btn-play-pause">
-                ▶ Main
-              </button>
-              <button type="button" class="ctrl-btn" id="btn-rewind" title="Undur 10 saat (Anak Panah Kiri)">
-                ⏪ -10s
-              </button>
-              <button type="button" class="ctrl-btn" id="btn-forward" title="Langkau 10 saat (Anak Panah Kanan)">
-                +10s ⏩
-              </button>
-              <div class="volume-wrap">
-                <button type="button" class="ctrl-btn" id="btn-mute" title="Suara / Senyap">
-                  🔊
-                </button>
-                <input
-                  type="range"
-                  id="volume-slider"
-                  class="volume-slider"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value="1"
-                  aria-label="Laraskan kelantangan suara"
-                >
-              </div>
-            </div>
-
-            <div class="controls-right">
-              <label for="speed-select" class="sr-only" hidden>Kelajuan</label>
-              <select id="speed-select" class="speed-select" aria-label="Kelajuan Tayangan">
-                <option value="0.75">0.75x (Perlahan)</option>
-                <option value="1" selected>1.0x (Normal)</option>
-                <option value="1.25">1.25x (Laju)</option>
-                <option value="1.5">1.5x (Pantas)</option>
-              </select>
-              <button type="button" class="ctrl-btn fullscreen-cta-btn" id="btn-fullscreen" title="Skrin Penuh untuk Slaid Tayangan (Kekunci F)">
-                ⛶ Skrin Penuh
-              </button>
-            </div>
-          </div>
+        <div class="recap-pill">
+          <strong>✓ Sidang 3 · Sabtu Pagi</strong>
+          <small>28 November 2026 · Selesai</small>
         </div>
-      </div>
-    </section>
-
-    <!-- ======================================================================
-         HALAMAN 2: ATURCARA MAJLIS (LAMPIRAN 2 — PAPARAN HALAMAN BERASINGAN)
-         ====================================================================== -->
-    <section id="page-aturcara" class="page-view" aria-label="Halaman Aturcara Majlis" hidden>
-      <div class="aturcara-page-shell">
-        <!-- BAR TAB PILIHAN SIDANG ATURCARA -->
-        <div class="aturcara-topbar">
-          <div class="aturcara-topbar-title">
-            <span class="eyebrow">LAMPIRAN 2 · JADUAL RASMI MAJLIS</span>
-            <h1>📋 Aturcara Majlis Apresiasi Kecemerlangan 2026</h1>
-          </div>
-
-          <div class="aturcara-tabs" role="tablist" aria-label="Pilih Sidang Aturcara">
-            <button type="button" class="aturcara-tab-btn active" data-aturcara-tab="s1" role="tab" aria-selected="true">
-              🌅 Sidang 1 · Jumaat Pagi
-            </button>
-            <button type="button" class="aturcara-tab-btn" data-aturcara-tab="s2" role="tab" aria-selected="false">
-              🌤️ Sidang 2 · Jumaat Petang
-            </button>
-            <button type="button" class="aturcara-tab-btn" data-aturcara-tab="s3" role="tab" aria-selected="false">
-              🏆 Sidang 3 · Sabtu Pagi
-            </button>
-          </div>
-        </div>
-
-        <!-- ================= SIDANG 1: HARI PERTAMA (PAGI) ================= -->
-        <article class="aturcara-card active" data-aturcara-panel="s1">
-          <div class="aturcara-card-banner">
-            <div class="aturcara-card-title-group">
-              <div class="aturcara-meta-pills">
-                <span class="aturcara-sidang-pill">SIDANG 1 · JUMAAT PAGI</span>
-                <span class="meta-pill-gold">🕡 6.30 Pagi – 10.40 Pagi</span>
-                <span class="meta-pill-attendance">👥 Kehadiran: Semua murid tahap 2</span>
-              </div>
-              <h2>HARI PERTAMA (PAGI) – 27 NOVEMBER 2026 (JUMAAT)</h2>
-            </div>
-            <div class="aturcara-card-actions">
-              <button type="button" class="btn-aturcara-play" data-play-session="s1">
-                🎬 Buka Video Sidang 1
-              </button>
-              <button type="button" class="btn-aturcara-fs" data-fullscreen-session="s1">
-                ⛶ Tayang Slaid Skrin Penuh
-              </button>
-            </div>
-          </div>
-
-          <div class="aturcara-bento-grid">
-            <!-- KIRI: ACARA PEMBUKAAN & PRASEKOLAH -->
-            <div class="aturcara-col">
-              <div class="aturcara-row">
-                <span class="time-badge">6.30 pagi</span>
-                <strong>Ketibaan murid / Pendaftaran</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">6.50 pagi</span>
-                <strong>Ketibaan Guru Besar</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">7.00 pagi</span>
-                <strong>Nyanyian Lagu Negaraku, Lagu Negeri Sabah dan Lagu Sekolah</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">7.05 pagi</span>
-                <strong>Bacaan Doa</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">7.10 pagi</span>
-                <strong>Lafaz Ikrar</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">7.15 pagi</span>
-                <strong>Ucapan Penolong Kanan Pentadbiran SK Ranggu</strong>
-              </div>
-              <div class="aturcara-row highlight-row">
-                <span class="time-badge gold">7.25 pagi</span>
-                <strong>Penyampaian sijil tamat pra sekolah</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">8.00 pagi</span>
-                <strong>Persembahan murid pra sekolah</strong>
-              </div>
-            </div>
-
-            <!-- KANAN: PENYAMPAIAN SIJIL, ANUGERAH & PENUTUP -->
-            <div class="aturcara-col">
-              <div class="aturcara-row highlight-row">
-                <span class="time-badge gold">8.10 pagi</span>
-                <div class="aturcara-detail">
-                  <strong>Penyampaian Sijil &amp; Anugerah Tahap 2</strong>
-                  <ul class="aturcara-sublist">
-                    <li>Penyampaian sijil Pengawas Sekolah tahap 2</li>
-                    <li>Penyampaian sijil Pengawas Pusat Sumber tahap 2</li>
-                    <li>Penyampaian sijil Ketua Kelas &amp; Penolong ketua Kelas tahap 2</li>
-                    <li>Penyampaian sijil Pembimbing Rakan Sebaya tahap 2</li>
-                    <li>Penyampaian sijil pengawas PPDa tahap 2</li>
-                    <li>Penyampaian sijil pengawas SPBT tahap 2</li>
-                    <li>Penyampaian Anugerah Nilam 2026 tahap 2</li>
-                    <li>Penyampaian Anugerah kehadiran penuh 2026 tahap 2</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="aturcara-row break-row">
-                <span class="time-badge muted">9.10 pagi</span>
-                <strong>Rehat</strong>
-              </div>
-              <div class="aturcara-row highlight-row">
-                <span class="time-badge gold">9.30 pagi</span>
-                <strong>Penyampaian Anugerah Mata Pelajaran Terbaik PBD dan UASA Tahun 4 dan 5</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">10.40 pagi</span>
-                <strong>Bersurai / Sesi Bergambar</strong>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- ================= SIDANG 2: HARI PERTAMA (PETANG) ================= -->
-        <article class="aturcara-card" data-aturcara-panel="s2" hidden>
-          <div class="aturcara-card-banner">
-            <div class="aturcara-card-title-group">
-              <div class="aturcara-meta-pills">
-                <span class="aturcara-sidang-pill">SIDANG 2 · JUMAAT PETANG</span>
-                <span class="meta-pill-gold">🕧 12.50 Tengah Hari – 4.40 Petang</span>
-                <span class="meta-pill-attendance">👥 Kehadiran: Semua murid Tahap 1</span>
-              </div>
-              <h2>HARI PERTAMA (PETANG) – 27 NOVEMBER 2026 (JUMAAT)</h2>
-            </div>
-            <div class="aturcara-card-actions">
-              <button type="button" class="btn-aturcara-play" data-play-session="s2">
-                🎬 Buka Video Sidang 2
-              </button>
-              <button type="button" class="btn-aturcara-fs" data-fullscreen-session="s2">
-                ⛶ Tayang Slaid Skrin Penuh
-              </button>
-            </div>
-          </div>
-
-          <div class="aturcara-bento-grid">
-            <!-- KIRI: ACARA PEMBUKAAN & SIJIL KEPIMPINAN TAHAP 1 -->
-            <div class="aturcara-col">
-              <div class="aturcara-row">
-                <span class="time-badge">12.50 tengah hari</span>
-                <strong>Ketibaan murid / Pendaftaran</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">1.10 petang</span>
-                <strong>Ketibaan Guru Besar</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">1.15 petang</span>
-                <strong>Nyanyian Lagu Negaraku, Lagu Negeri Sabah dan Lagu Sekolah</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">1.20 petang</span>
-                <strong>Bacaan Doa</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">1.25 petang</span>
-                <strong>Lafaz Ikrar</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">1.30 petang</span>
-                <strong>Ucapan Penolong Kanan Petang SK Ranggu</strong>
-              </div>
-              <div class="aturcara-row highlight-row">
-                <span class="time-badge gold">1.40 petang</span>
-                <div class="aturcara-detail">
-                  <strong>Penyampaian Sijil &amp; Anugerah Tahap 1</strong>
-                  <ul class="aturcara-sublist">
-                    <li>Penyampaian sijil Pengawas Sekolah tahap 1</li>
-                    <li>Penyampaian sijil Pengawas Pusat Sumber tahap 1</li>
-                    <li>Penyampaian sijil Ketua Kelas &amp; Penolong ketua Kelas tahap 1</li>
-                    <li>Penyampaian sijil Pembimbing Rakan Sebaya tahap 1</li>
-                    <li>Penyampaian sijil pengawas PPDa tahap 1</li>
-                    <li>Penyampaian sijil pengawas SPBT tahap 1</li>
-                    <li>Penyampaian Anugerah Nilam 2026 tahap 1</li>
-                    <li>Penyampaian Anugerah kehadiran penuh 2026 tahap 1</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- KANAN: REHAT, PERSEMBAHAN & ANUGERAH AKADEMIK TAHAP 1 -->
-            <div class="aturcara-col">
-              <div class="aturcara-row break-row">
-                <span class="time-badge muted">2.30 petang</span>
-                <strong>Rehat</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">2.50 petang</span>
-                <strong>Persembahan murid Tahap 1</strong>
-              </div>
-              <div class="aturcara-row highlight-row">
-                <span class="time-badge gold">3.00 petang</span>
-                <strong>Penyampaian Anugerah Mata Pelajaran Terbaik PBD Tahap 1</strong>
-              </div>
-              <div class="aturcara-row highlight-row">
-                <span class="time-badge gold">4.00 petang</span>
-                <div class="aturcara-detail">
-                  <strong>Anugerah Sahsiah, J-Qaf &amp; Cemerlang Akademik Tahap 1</strong>
-                  <ul class="aturcara-sublist">
-                    <li>Anugerah Sahsiah Terpuji Tahap 1 (L/P)</li>
-                    <li>Anugerah Terbaik J-Qaf Tahap 1</li>
-                    <li>Penyampaian Anugerah Cemerlang Akademik Tahap 1</li>
-                  </ul>
-                  <div class="medal-badges-row">
-                    <span class="medal-pill platinum">💎 Anugerah Platinum</span>
-                    <span class="medal-pill gold">🥇 Anugerah Emas</span>
-                    <span class="medal-pill silver">🥈 Anugerah Perak</span>
-                  </div>
-                </div>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">4.40 petang</span>
-                <strong>Bersurai / Sesi Bergambar</strong>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- ================= SIDANG 3: HARI KEDUA (SABTU) ================= -->
-        <article class="aturcara-card" data-aturcara-panel="s3" hidden>
-          <div class="aturcara-card-banner">
-            <div class="aturcara-card-title-group">
-              <div class="aturcara-meta-pills">
-                <span class="aturcara-sidang-pill">SIDANG 3 · SABTU PAGI</span>
-                <span class="meta-pill-gold">🕡 6.40 Pagi – 11.30 Pagi</span>
-                <span class="meta-pill-attendance">👥 Kehadiran: Murid, Ibu Bapa &amp; Tetamu Kehormat</span>
-              </div>
-              <h2>HARI KEDUA – 28 NOVEMBER 2026 (SABTU)</h2>
-            </div>
-            <div class="aturcara-card-actions">
-              <button type="button" class="btn-aturcara-play" data-play-session="s3">
-                🎬 Buka Video Sidang 3
-              </button>
-              <button type="button" class="btn-aturcara-fs" data-fullscreen-session="s3">
-                ⛶ Tayang Slaid Skrin Penuh
-              </button>
-            </div>
-          </div>
-
-          <div class="aturcara-bento-grid">
-            <!-- KIRI: PERASMIAN & SIJIL TAMAT TAHUN 6 -->
-            <div class="aturcara-col">
-              <div class="aturcara-row">
-                <span class="time-badge">6.40 pagi</span>
-                <strong>Ketibaan murid, ibu bapa / Pendaftaran</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">7.00 pagi</span>
-                <strong>Ketibaan Guru Besar dan Tetamu Kehormat</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">7.10 pagi</span>
-                <strong>Nyanyian Lagu Negaraku, Lagu Negeri Sabah dan Lagu Sekolah</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">7.15 pagi</span>
-                <strong>Bacaan Doa</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">7.20 pagi</span>
-                <strong>Lafaz Ikrar</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">7.25 pagi</span>
-                <strong>Ucapan Wakil Murid</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">7.35 pagi</span>
-                <strong>Ucapan Guru Besar SK Ranggu</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">7.50 pagi</span>
-                <strong>Ucapan Perasmian oleh YDP PIBG</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">8.00 pagi</span>
-                <strong>Gimik perasmian</strong>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">8.05 pagi</span>
-                <strong>Penyampaian cenderahati perasmi</strong>
-              </div>
-              <div class="aturcara-row highlight-row">
-                <span class="time-badge gold">8.10 pagi</span>
-                <strong>Penyampaian sijil Tamat Persekolahan Tahun 6 Sesi 2026</strong>
-              </div>
-            </div>
-
-            <!-- KANAN: PERSEMBAHAN, TOKOH MURID & ANUGERAH CEMERLANG TAHAP 2 -->
-            <div class="aturcara-col">
-              <div class="aturcara-row">
-                <span class="time-badge">9.30 pagi</span>
-                <strong>Persembahan 1</strong>
-              </div>
-              <div class="aturcara-row highlight-row">
-                <span class="time-badge gold">9.40 pagi</span>
-                <div class="aturcara-detail">
-                  <strong>Anugerah Sahsiah, J-Qaf, Kokurikulum &amp; Tokoh Murid 2026</strong>
-                  <ul class="aturcara-sublist">
-                    <li>Anugerah Sahsiah Terpuji Tahap 2 (L/P)</li>
-                    <li>Anugerah Terbaik J-Qaf Tahap 2</li>
-                    <li>
-                      <strong>Anugerah cemerlang kokurikulum :</strong>
-                      <div class="koko-tags-row">
-                        <span class="koko-tag">Unit Beruniform</span>
-                        <span class="koko-tag">Kelab &amp; persatuan</span>
-                        <span class="koko-tag">Sukan &amp; permainan</span>
-                        <span class="koko-tag special">⭐ Tokoh PAJSK</span>
-                        <span class="koko-tag special">🏆 Tokoh kokurikulum</span>
-                      </div>
-                    </li>
-                    <li><strong>👑 Penyampaian Anugerah Tokoh Murid 2026</strong></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">10.10 pagi</span>
-                <strong>Persembahan 2</strong>
-              </div>
-              <div class="aturcara-row highlight-row">
-                <span class="time-badge gold">10.20 pagi</span>
-                <div class="aturcara-detail">
-                  <strong>Penyampaian Anugerah Cemerlang PBD, UASA Tahun 6 &amp; Akademik Tahap 2</strong>
-                  <ul class="aturcara-sublist">
-                    <li>Penyampaian Anugerah Cemerlang PBD dan UASA Tahun 6</li>
-                    <li>Anugerah Cemerlang Akademik Tahap 2</li>
-                  </ul>
-                  <div class="medal-badges-row">
-                    <span class="medal-pill platinum">💎 Anugerah Platinum</span>
-                    <span class="medal-pill gold">🥇 Anugerah Emas</span>
-                    <span class="medal-pill silver">🥈 Anugerah Perak</span>
-                  </div>
-                </div>
-              </div>
-              <div class="aturcara-row">
-                <span class="time-badge">11.30 pagi</span>
-                <strong>Bersurai / Sesi bergambar</strong>
-              </div>
-            </div>
-          </div>
-        </article>
       </div>
     </section>
   </main>
 
-  <div class="security-toast" id="security-toast" role="status" aria-live="assertive" hidden></div>
-
   <footer>
     <span><strong>Sekolah Kebangsaan Ranggu</strong> · XBA3037 · Tawau, Sabah</span>
-    <span>Portal Tayangan &amp; Aturcara MAK 2026 · <strong>Mohammad Fikrey bin Abdul Gapar</strong></span>
+    <span>Portal Rasmi MAK 2026 · <strong>Mohammad Fikrey bin Abdul Gapar</strong></span>
   </footer>
 
-  <script src="app.js?v=20261128"></script>
 </body>
 </html>
